@@ -7,7 +7,7 @@ import { Typography } from '@strapi/design-system/Typography';
 import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Formik } from 'formik';
-import { camelCase, isEmpty, merge, pickBy } from 'lodash';
+import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 import React, { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 import { SOURCE_TYPES } from '../../../../constants';
@@ -79,7 +79,7 @@ export const Settings = () => {
 
   const preparePayload = useCallback((values: FormData) => {
     const source = pickBy({
-      id: values.sourceId ? values.sourceId : undefined,
+      id: values.sourceType === SOURCE_TYPES.OTHER && values.sourceId ? values.sourceId : undefined,
       type: values.sourceType,
       url: values.sourceUrl ? values.sourceUrl : undefined,
     }, (value) => value !== undefined) as ConfigData['source'];
@@ -87,8 +87,12 @@ export const Settings = () => {
       mediaLibrarySourceUrl: values.mediaLibrarySourceUrl,
       source: isEmpty(source) ? { url: '', type: SOURCE_TYPES.FOLDER } : source,
     };
-    if (values.apiKey?.trim() !== data?.apiKey) {
-      payload.apiKey = values.apiKey;
+    if (values.sourceType === SOURCE_TYPES.OTHER) {
+      if (values.apiKey?.trim() !== data?.apiKey) {
+        payload.apiKey = values.apiKey;
+      }
+    } else {
+      payload.apiKey = undefined;
     }
     return payload;
   }, [data]);
@@ -116,8 +120,11 @@ export const Settings = () => {
   };
 
   const validate = async (values: FormData) => {
-    const result = settingsSchema.safeParse(preparePayload(values));
-    console.log('result', result);
+    const payload = preparePayload(values);
+    const result = settingsSchema.safeParse({
+      ...payload,
+      apiKey: isNil(payload.apiKey) ? data?.apiKey : payload.apiKey, 
+    });
     const isAPIRequired = values.sourceType === SOURCE_TYPES.OTHER;
     const isOtherAPIKey = values.apiKey && values.apiKey !== data?.apiKey?.trim();
     if (result.success) {

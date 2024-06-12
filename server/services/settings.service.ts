@@ -31,12 +31,10 @@ const settingsService = ({ strapi }: StrapiContext) => {
 
     async updateSettings(config: ConfigData): Promise<ConfigData> {
       const pluginStore = this.getPluginStore();
-      const oldConfig = await this.getSettings(true);
       const newSource = pickBy({ id: config.source?.id, type: config.source.type, url: config.source?.url }, (value) => value !== undefined);
       await pluginStore.set({
         key: 'config',
         value: {
-          ...oldConfig,
           ...config,
           source: isEmpty(newSource) ? undefined : newSource,
         },
