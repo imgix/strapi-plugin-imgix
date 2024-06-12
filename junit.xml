@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="6" failures="0" errors="0" time="4.416">
+  <testsuite name="Bootstrap" errors="0" failures="0" skipped="0" timestamp="2024-06-12T06:39:15" time="4.036" tests="3">
+    <testcase classname="Bootstrap saveConfig when config not exist in store should save default config in to store" name="Bootstrap saveConfig when config not exist in store should save default config in to store" time="0.022">
+    </testcase>
+    <testcase classname="Bootstrap saveConfig when config exist in store should do not save config" name="Bootstrap saveConfig when config exist in store should do not save config" time="0.001">
+    </testcase>
+    <testcase classname="Bootstrap addPermissions should add permission plugin" name="Bootstrap addPermissions should add permission plugin" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Register" errors="0" failures="0" skipped="0" timestamp="2024-06-12T06:39:15" time="4.182" tests="3">
+    <testcase classname="Register when call upload from provider should call upload from decorator" name="Register when call upload from provider should call upload from decorator" time="0.006">
+    </testcase>
+    <testcase classname="Register when provider implement upload via stream should call uploadStream from decorator" name="Register when provider implement upload via stream should call uploadStream from decorator" time="0">
+    </testcase>
+    <testcase classname="Register when user remove asset should call delete from decorator" name="Register when user remove asset should call delete from decorator" time="0.002">
+    </testcase>
+  </testsuite>
+</testsuites>
