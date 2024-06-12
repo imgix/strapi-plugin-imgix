@@ -18,6 +18,8 @@ type AdvanceSectionProps = {
 }
 
 export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, apiKeyError }: AdvanceSectionProps) => {
+  const anyFieldFilled = sourceId || apiKey;
+
   return (
     <Stack size={4}>
       <Flex direction="column" alignItems="flex-start" gap={2}>
@@ -40,7 +42,7 @@ export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, 
             )}
             onChange={handleChange}
             hint={getMessage('page.settings.sections.form.advance.source.id.hint')}
-            required
+            required={anyFieldFilled}
           />
         </GridItem>
         <GridItem col={6} xs={12}>
@@ -54,7 +56,7 @@ export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, 
             )}
             onChange={handleChange}
             hint={getMessage('page.settings.sections.form.advance.apiKey.hint')}
-            required
+            required={anyFieldFilled}
           />
         </GridItem>
       </Grid>
