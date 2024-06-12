@@ -31,11 +31,17 @@ const settingsService = ({ strapi }: StrapiContext) => {
 
     async updateSettings(config: ConfigData): Promise<ConfigData> {
       const pluginStore = this.getPluginStore();
-      const newSource = pickBy({ id: config.source?.id, type: config.source.type, url: config.source?.url }, (value) => value !== undefined);
+      const advancedSettingsAllowed = config.source.type === SOURCE_TYPES.OTHER;
+      const newSource = pickBy({ 
+        id: advancedSettingsAllowed ? config.source?.id : undefined, 
+        type: config.source.type, 
+        url: config.source?.url }, (value) => value !== undefined);
+      
       await pluginStore.set({
         key: 'config',
         value: {
           ...config,
+          apiKey: advancedSettingsAllowed ? config.apiKey : undefined,
           source: isEmpty(newSource) ? undefined : newSource,
         },
       });

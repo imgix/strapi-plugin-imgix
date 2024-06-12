@@ -33,6 +33,9 @@ export const Settings = () => {
   const { lockApp, unlockApp } = useOverlayBlocker();
   const { formatMessage } = useIntl();
 
+  const [apiKeyValidation, setApiKeyValidation] = React.useState(false);
+  const [submitInProgress, setSubmitInProgress] = React.useState(false);
+
   const { data, isLoading } = useQuery({
     queryKey: [camelCase(pluginId), 'get-settings'],
     queryFn: () => http.get<ConfigData>('/settings'),
@@ -98,11 +101,17 @@ export const Settings = () => {
   }, [data]);
 
   const onSubmitForm = async (values: FormData) => {
+    setSubmitInProgress(true);
     const payload = preparePayload(values);
     lockApp();
     try {
       await saveSettings.mutateAsync(payload);
-    } catch { }
+    } catch {
+
+    } finally { 
+      unlockApp();
+      setSubmitInProgress(false);
+    }
   };
 
   const boxDefaultProps = {
@@ -123,13 +132,15 @@ export const Settings = () => {
     const payload = preparePayload(values);
     const result = settingsSchema.safeParse({
       ...payload,
-      apiKey: isNil(payload.apiKey) ? data?.apiKey : payload.apiKey, 
+      apiKey: isNil(payload.apiKey) ? data?.apiKey : payload.apiKey,
     });
     const isAPIRequired = values.sourceType === SOURCE_TYPES.OTHER;
     const isOtherAPIKey = values.apiKey && values.apiKey !== data?.apiKey?.trim();
     if (result.success) {
       if (isOtherAPIKey && isAPIRequired) {
+        setApiKeyValidation(true);
         const { valid } = await validateAPIKey.mutateAsync(values.apiKey!);
+        setApiKeyValidation(false);
         if (!valid) {
           return { apiKey: 'page.settings.sections.form.advance.apiKey.errors.invalid' };
         }
@@ -141,7 +152,9 @@ export const Settings = () => {
       return acc;
     }, {} as Record<string, string>);
     if (isEmpty(errors) && isOtherAPIKey && isAPIRequired) {
+      setApiKeyValidation(true);
       const { valid } = await validateAPIKey.mutateAsync(values.apiKey!);
+      setApiKeyValidation(false);
       if (!valid) {
         errors.apiKey = 'page.settings.sections.form.advance.apiKey.errors.invalid';
       }
@@ -155,6 +168,9 @@ export const Settings = () => {
       </LoadingIndicatorPage>
     );
   }
+
+  const asyncActionInProgress = apiKeyValidation || submitInProgress;
+
   return (
     <Main>
       <Formik<FormData>
@@ -186,6 +202,8 @@ export const Settings = () => {
                     <Button
                       type="submit"
                       startIcon={check}
+                      disabled={asyncActionInProgress}
+                      loading={asyncActionInProgress}
                     >
                       {getMessage('page.settings.actions.save')}
                     </Button>
@@ -202,6 +220,7 @@ export const Settings = () => {
                       sourceType={values.sourceType}
                       mediaLibrarySourceUrlError={errors.mediaLibrarySourceUrl}
                       sourceUrlError={errors.sourceUrl}
+                      disabled={asyncActionInProgress}
                     />
                   </Box>
                   {values.sourceType === SOURCE_TYPES.OTHER && (
@@ -212,11 +231,15 @@ export const Settings = () => {
                         sourceId={values.sourceId}
                         sourceIdError={errors.sourceId}
                         apiKeyError={errors.apiKey}
+                        apiKeyValidation={apiKeyValidation}
+                        disabled={asyncActionInProgress}
                       />
                     </Box>)}
                   <CheckPermissions permissions={permissions.settingsChange}>
                     <Box {...boxDefaultProps}>
-                      <RestoreSection setValues={setValues} />
+                      <RestoreSection
+                        setValues={setValues}
+                        disabled={asyncActionInProgress} />
                     </Box>
                   </CheckPermissions>
                 </Stack>

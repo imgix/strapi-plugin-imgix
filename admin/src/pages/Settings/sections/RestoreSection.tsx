@@ -20,10 +20,11 @@ import { FormData } from '../types';
 
 type RestoreSectionProps = {
   setValues: FormikHelpers<FormData>['setValues'];
+  disabled?: boolean;
 }
 
 
-export const RestoreSection = ({ setValues }: RestoreSectionProps) => {
+export const RestoreSection = ({ setValues, disabled }: RestoreSectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const http = useHTTP();
   const toggleNotification = useNotification();
@@ -88,6 +89,7 @@ export const RestoreSection = ({ setValues }: RestoreSectionProps) => {
             variant="danger-light"
             startIcon={refresh}
             onClick={handleRestoreConfirmation}
+            disabled={disabled}
           >
             {getMessage('page.settings.actions.restore')}
           </Button>

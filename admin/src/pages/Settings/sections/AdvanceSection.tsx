@@ -3,6 +3,7 @@ import { FormikHandlers } from 'formik';
 
 import { Flex } from '@strapi/design-system/Flex';
 import { Grid, GridItem } from '@strapi/design-system/Grid';
+import { Loader } from '@strapi/design-system';
 import { Stack } from '@strapi/design-system/Stack';
 import { TextInput } from '@strapi/design-system/TextInput';
 import { Typography } from '@strapi/design-system/Typography';
@@ -15,11 +16,12 @@ type AdvanceSectionProps = {
   sourceId?: string;
   sourceIdError?: string;
   apiKeyError?: string;
+  apiKeyValidation?: boolean;
+  disabled?: boolean;
 }
 
-export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, apiKeyError }: AdvanceSectionProps) => {
+export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, apiKeyError, apiKeyValidation, disabled }: AdvanceSectionProps) => {
   const anyFieldFilled = sourceId || apiKey;
-
   return (
     <Stack size={4}>
       <Flex direction="column" alignItems="flex-start" gap={2}>
@@ -42,6 +44,7 @@ export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, 
             )}
             onChange={handleChange}
             hint={getMessage('page.settings.sections.form.advance.source.id.hint')}
+            disabled={disabled}
             required={anyFieldFilled}
           />
         </GridItem>
@@ -56,6 +59,8 @@ export const AdvanceSection = ({ sourceId, apiKey, handleChange, sourceIdError, 
             )}
             onChange={handleChange}
             hint={getMessage('page.settings.sections.form.advance.apiKey.hint')}
+            endAction={apiKeyValidation && (<Loader small />)}
+            disabled={disabled}
             required={anyFieldFilled}
           />
         </GridItem>
