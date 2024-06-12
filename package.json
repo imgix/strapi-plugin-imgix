@@ -88,7 +88,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "publish:latest": "cd build && npm publish --tag latest",
+    "publish:latest": "cd dist && npm publish --tag latest",
     "prepublish:latest": "npm run clean && npm run build && node dist/setup-package.js",
     "build": "tsc",
     "build:dev": "yarn run build && cp ./package.json ./dist",
