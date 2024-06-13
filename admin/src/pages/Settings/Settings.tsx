@@ -5,7 +5,7 @@ import { Main } from '@strapi/design-system/Main';
 import { Stack } from '@strapi/design-system/Stack';
 import { Typography } from '@strapi/design-system/Typography';
 import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 import React, { useCallback } from 'react';
@@ -32,6 +32,7 @@ export const Settings = () => {
   const toggleNotification = useNotification();
   const { lockApp, unlockApp } = useOverlayBlocker();
   const { formatMessage } = useIntl();
+  const queryClient = useQueryClient();
 
   const [apiKeyValidation, setApiKeyValidation] = React.useState(false);
   const [submitInProgress, setSubmitInProgress] = React.useState(false);
@@ -52,6 +53,7 @@ export const Settings = () => {
     mutationKey: [camelCase(pluginId), 'put-settings'],
     mutationFn: (values: ConfigData) => http.put<ConfigData>('/settings', values),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [camelCase(pluginId), 'get-settings'] });
       toggleNotification({
         type: 'success',
         message: {
