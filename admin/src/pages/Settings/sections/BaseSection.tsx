@@ -24,9 +24,10 @@ type BaseSectionProps = {
   sourceUrl?: string;
   mediaLibrarySourceUrlError?: string;
   sourceUrlError?: string;
+  disabled?: boolean;
 }
 
-export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibrarySourceUrlError, sourceUrl, sourceUrlError, sourceType }: BaseSectionProps) => {
+export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibrarySourceUrlError, sourceUrl, sourceUrlError, sourceType, disabled }: BaseSectionProps) => {
   const { formatMessage } = useIntl();
 
   const handleSelectChange = (value: SourceTypeValue) => handleChange({ target: { name: 'sourceType', value } });
@@ -48,7 +49,8 @@ export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibraryS
               target="_blank"
               isExternal>
               {getMessage('page.settings.sections.form.base.source.type.hint')}
-            </HintLink>}>
+            </HintLink>}
+            disabled={disabled}>
             {Object.values(SOURCE_TYPES).map((type: SourceTypeValue) => (<SingleSelectOption value={type}>
               {getMessage(`page.settings.sections.form.base.source.type.options.${type}`)}
             </SingleSelectOption>))}
@@ -69,6 +71,7 @@ export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibraryS
             }, {
               example: <em>https://mydomain.com/uploads/</em>,
             })}
+            disabled={disabled}
             required
           />
         </GridItem>
@@ -85,6 +88,7 @@ export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibraryS
             }, {
               example: <em>https://my-source.imgix.net</em>,
             })}
+            disabled={disabled}
             required
           />
         </GridItem>

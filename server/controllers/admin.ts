@@ -1,8 +1,9 @@
+import { isNil } from 'lodash';
 import { StrapiContext } from '../../@types';
 import permissions from '../../permissions';
 import { permissionsChecker, RequestCtx } from '../decorators';
 import { getService } from '../utils';
-import { getAPIValidator, getSettingsValidator } from '../validators';
+import { ConfigData, getAPIValidator, getSettingsValidator } from '../validators';
 
 export default ({ strapi }: StrapiContext) => {
   const settingsService = getService(strapi, 'settings');
@@ -18,7 +19,13 @@ export default ({ strapi }: StrapiContext) => {
       permissions: [permissions.render(permissions.settings.change)],
       async apply(ctx: RequestCtx) {
         try {
-          const payload = await getSettingsValidator(ctx.request.body);
+          const { apiKey: newApiKey } = ctx.request.body as ConfigData;
+          const currentConfig = await settingsService.getSettings(true);
+          const { apiKey: currentApiKey } = currentConfig;
+          const payload = await getSettingsValidator({
+            ...(ctx.request.body as ConfigData),
+            apiKey: isNil(newApiKey) ? currentApiKey : newApiKey,
+          });
           return settingsService.updateSettings(payload);
         } catch (reason) {
           return ctx.badRequest('ValidationError', reason);

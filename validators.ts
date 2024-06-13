@@ -10,7 +10,8 @@ export const settingsSchema = z.object({
     url: z.string({ message: 'page.settings.sections.form.base.source.errors.required' }).url({ message: 'page.settings.sections.form.base.source.errors.format' }),
   }),
 }).superRefine((data, ctx) => {
-  if (data.source.type === SOURCE_TYPES.OTHER) {
+  const anyFieldFilled = data.source.id || data.apiKey;
+  if ((data.source.type === SOURCE_TYPES.OTHER) && anyFieldFilled) {
     if (!data.source.id) {
       ctx.addIssue({
         message: 'page.settings.sections.form.advance.errors.required',

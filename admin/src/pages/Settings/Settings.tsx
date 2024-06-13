@@ -5,9 +5,9 @@ import { Main } from '@strapi/design-system/Main';
 import { Stack } from '@strapi/design-system/Stack';
 import { Typography } from '@strapi/design-system/Typography';
 import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
-import { camelCase, isEmpty, merge, pickBy } from 'lodash';
+import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 import React, { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 import { SOURCE_TYPES } from '../../../../constants';
@@ -32,6 +32,10 @@ export const Settings = () => {
   const toggleNotification = useNotification();
   const { lockApp, unlockApp } = useOverlayBlocker();
   const { formatMessage } = useIntl();
+  const queryClient = useQueryClient();
+
+  const [apiKeyValidation, setApiKeyValidation] = React.useState(false);
+  const [submitInProgress, setSubmitInProgress] = React.useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: [camelCase(pluginId), 'get-settings'],
@@ -49,6 +53,7 @@ export const Settings = () => {
     mutationKey: [camelCase(pluginId), 'put-settings'],
     mutationFn: (values: ConfigData) => http.put<ConfigData>('/settings', values),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [camelCase(pluginId), 'get-settings'] });
       toggleNotification({
         type: 'success',
         message: {
@@ -79,7 +84,7 @@ export const Settings = () => {
 
   const preparePayload = useCallback((values: FormData) => {
     const source = pickBy({
-      id: values.sourceId ? values.sourceId : undefined,
+      id: values.sourceType === SOURCE_TYPES.OTHER && values.sourceId ? values.sourceId : undefined,
       type: values.sourceType,
       url: values.sourceUrl ? values.sourceUrl : undefined,
     }, (value) => value !== undefined) as ConfigData['source'];
@@ -87,18 +92,28 @@ export const Settings = () => {
       mediaLibrarySourceUrl: values.mediaLibrarySourceUrl,
       source: isEmpty(source) ? { url: '', type: SOURCE_TYPES.FOLDER } : source,
     };
-    if (values.apiKey?.trim() !== data?.apiKey) {
-      payload.apiKey = values.apiKey;
+    if (values.sourceType === SOURCE_TYPES.OTHER) {
+      if (values.apiKey?.trim() !== data?.apiKey) {
+        payload.apiKey = values.apiKey;
+      }
+    } else {
+      payload.apiKey = undefined;
     }
     return payload;
   }, [data]);
 
   const onSubmitForm = async (values: FormData) => {
+    setSubmitInProgress(true);
     const payload = preparePayload(values);
     lockApp();
     try {
       await saveSettings.mutateAsync(payload);
-    } catch { }
+    } catch {
+
+    } finally { 
+      unlockApp();
+      setSubmitInProgress(false);
+    }
   };
 
   const boxDefaultProps = {
@@ -116,13 +131,18 @@ export const Settings = () => {
   };
 
   const validate = async (values: FormData) => {
-    const result = settingsSchema.safeParse(preparePayload(values));
-    console.log('result', result);
+    const payload = preparePayload(values);
+    const result = settingsSchema.safeParse({
+      ...payload,
+      apiKey: isNil(payload.apiKey) ? data?.apiKey : payload.apiKey,
+    });
     const isAPIRequired = values.sourceType === SOURCE_TYPES.OTHER;
     const isOtherAPIKey = values.apiKey && values.apiKey !== data?.apiKey?.trim();
     if (result.success) {
       if (isOtherAPIKey && isAPIRequired) {
+        setApiKeyValidation(true);
         const { valid } = await validateAPIKey.mutateAsync(values.apiKey!);
+        setApiKeyValidation(false);
         if (!valid) {
           return { apiKey: 'page.settings.sections.form.advance.apiKey.errors.invalid' };
         }
@@ -134,7 +154,9 @@ export const Settings = () => {
       return acc;
     }, {} as Record<string, string>);
     if (isEmpty(errors) && isOtherAPIKey && isAPIRequired) {
+      setApiKeyValidation(true);
       const { valid } = await validateAPIKey.mutateAsync(values.apiKey!);
+      setApiKeyValidation(false);
       if (!valid) {
         errors.apiKey = 'page.settings.sections.form.advance.apiKey.errors.invalid';
       }
@@ -148,6 +170,9 @@ export const Settings = () => {
       </LoadingIndicatorPage>
     );
   }
+
+  const asyncActionInProgress = apiKeyValidation || submitInProgress;
+
   return (
     <Main>
       <Formik<FormData>
@@ -179,6 +204,8 @@ export const Settings = () => {
                     <Button
                       type="submit"
                       startIcon={check}
+                      disabled={asyncActionInProgress}
+                      loading={asyncActionInProgress}
                     >
                       {getMessage('page.settings.actions.save')}
                     </Button>
@@ -195,6 +222,7 @@ export const Settings = () => {
                       sourceType={values.sourceType}
                       mediaLibrarySourceUrlError={errors.mediaLibrarySourceUrl}
                       sourceUrlError={errors.sourceUrl}
+                      disabled={asyncActionInProgress}
                     />
                   </Box>
                   {values.sourceType === SOURCE_TYPES.OTHER && (
@@ -205,11 +233,15 @@ export const Settings = () => {
                         sourceId={values.sourceId}
                         sourceIdError={errors.sourceId}
                         apiKeyError={errors.apiKey}
+                        apiKeyValidation={apiKeyValidation}
+                        disabled={asyncActionInProgress}
                       />
                     </Box>)}
                   <CheckPermissions permissions={permissions.settingsChange}>
                     <Box {...boxDefaultProps}>
-                      <RestoreSection setValues={setValues} />
+                      <RestoreSection
+                        setValues={setValues}
+                        disabled={asyncActionInProgress} />
                     </Box>
                   </CheckPermissions>
                 </Stack>

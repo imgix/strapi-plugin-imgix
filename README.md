@@ -72,10 +72,6 @@ In our minimum support we're following [official Node.js releases timelines](htt
 
 As a **verified** Strapi plugin, we're available on the [**Strapi Marketplace**](https://market.strapi.io/plugins/strapi-plugin-imgix) as well as **In-App Marketplace** where you can follow the installation instructions.
 
-<div style="margin: 20px 0" align="center">
-  <img style="width: 100%; height: auto;" src="public/assets/marketplace.png" alt="Strapi In-App Marketplace" />
-</div>
-
 ### From the command line
 
 You can install this plugin from NPM within your Strapi project.
@@ -236,13 +232,26 @@ To get the full list please check the dedicated **[Libraries directory](https://
    git clone git@github.com:imgix/strapi-plugin-imgix.git
    ```
 
-2. Create a soft link in your strapi project to plugin build folder
+2. Run install & develop build command
+
+   ```ts
+   // Install all dependencies
+   yarn install
+
+   // Watch for file changes
+   yarn develop
+
+   // or run build without nodemon
+   yarn build
+   ```
+
+3. Create a soft link in your strapi project to plugin build folder
 
    ```sh
    ln -s <your path>/strapi-plugin-imgix/dist <your path>/strapi-project/src/plugins/imgix
    ```
 
-3. Modify `config/plugins.{js,ts}` for `imgix`
+4. Modify `config/plugins.{js,ts}` for `imgix`
 
 ```js
 //...
@@ -254,11 +263,5 @@ To get the full list please check the dedicated **[Libraries directory](https://
 //...
 ```
 
-4. Run develop or build command
+5. Run your Strapi instance
 
-   ```ts
-   // Watch for file changes
-   yarn develop
-   // or run build without nodemon
-   yarn build:dev
-   ```
