@@ -1,5 +1,15 @@
+import { Strapi } from '@strapi/strapi';
 import { imgixMock } from './plugins/imgix';
 import { uploadMock } from './plugins/upload/upload';
+
+type StrapiMockConfig = {
+  storeConfig?: any;
+  config?: any;
+  log?: any;
+  imgixPlugin?: any;
+  uploadPlugin?: any;
+};
+
 
 export const getStrapiMock = ({
   storeConfig,
@@ -7,7 +17,7 @@ export const getStrapiMock = ({
   log,
   imgixPlugin = imgixMock,
   uploadPlugin = uploadMock,
-}: any = {}) => ({
+}: StrapiMockConfig = {}) => ({
   config,
   log,
   store: jest.fn().mockImplementation(() => ({
@@ -34,4 +44,4 @@ export const getStrapiMock = ({
       },
     },
   },
-});
+}) as unknown as Strapi;

@@ -1,6 +1,33 @@
-import { Strapi } from '@strapi/strapi';
 import imgixService from '../../services/imgix.service';
+import { ConfigData } from '../../validators';
 import { getStrapiMock } from '../utils/strapi';
+
+type DeepPartial<T> = T extends object
+  ? {
+    [P in keyof T]?: DeepPartial<T[P]>;
+  }
+  : T;
+
+const getUploadPluginMock = (isImage: boolean = true) => ({
+  service(name: string) {
+    switch (name) {
+      case 'image-manipulation':
+        return {
+          isImage: jest.fn().mockResolvedValue(isImage),
+        };
+      default:
+        throw new Error('Unexpected service name');
+    }
+  },
+});
+
+const getImgixPluginSettingsMock = (settings: DeepPartial<ConfigData>) => ({
+  service() {
+    return {
+      getSettings: jest.fn().mockResolvedValue(settings),
+    };
+  },
+});
 
 describe('Service: IMGIX', () => {
   beforeEach(() => {
@@ -12,9 +39,9 @@ describe('Service: IMGIX', () => {
 
     it('should return valid true if the response is ok', async () => {
       // Arrange
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       global.fetch = jest.fn().mockResolvedValue({ ok: true });
-      // Act
+      // Assert
       expect(await service.validateAPIKey('validApiKey')).toEqual({ valid: true });
       expect(global.fetch).toHaveBeenCalledTimes(1);
       expect(global.fetch).toHaveBeenCalledWith('https://api.imgix.com/api/v1/sources', {
@@ -26,7 +53,7 @@ describe('Service: IMGIX', () => {
     });
     it('should return valid false if the response is not ok', async () => {
       // Arrange
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
       // Act
       const response = await service.validateAPIKey('invalidApiKey');
@@ -42,19 +69,12 @@ describe('Service: IMGIX', () => {
     });
   });
   describe('addAsset', () => {
-    const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId' }, apiKey: 'mockApiKey' });
     const strapiInstance = getStrapiMock({
-      imgixPlugin: {
-        service() {
-          return {
-            getSettings: mockSettings,
-          };
-        },
-      },
+      imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId' }, apiKey: 'mockApiKey' }),
     });
     it('should add an asset', async () => {
       // Arrange
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       global.fetch = jest.fn().mockResolvedValue({ ok: true });
       // Act
       await service.addAsset('some-super-path');
@@ -69,7 +89,7 @@ describe('Service: IMGIX', () => {
     });
     it('should throw an error if the response is not ok', async () => {
       // Arrange
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
       try {
         // Act
@@ -89,19 +109,12 @@ describe('Service: IMGIX', () => {
     });
   });
   describe('purgeAsset', () => {
-    const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId@' }, apiKey: 'mockApiKey2' });
     const strapiInstance = getStrapiMock({
-      imgixPlugin: {
-        service() {
-          return {
-            getSettings: mockSettings,
-          };
-        },
-      },
+      imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@' }, apiKey: 'mockApiKey2' }),
     });
     it('should purge an asset', async () => {
       // Arrange
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       global.fetch = jest.fn().mockResolvedValue({ ok: true });
       // Act
       await service.purgeAsset('some-super-path');
@@ -125,7 +138,7 @@ describe('Service: IMGIX', () => {
     });
     it('should throw an error if the response is not ok', async () => {
       // Arrange
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       global.fetch = jest.fn().mockResolvedValue({ ok: false });
       try {
         // Act
@@ -156,17 +169,10 @@ describe('Service: IMGIX', () => {
   describe('getUploadDecorator', () => {
     it('should return an object with uploadStream, upload and delete methods', async () => {
       // Arrange
-      const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId@' }, apiKey: 'mockApiKey2' });
       const strapiInstance = getStrapiMock({
-        imgixPlugin: {
-          service() {
-            return {
-              getSettings: mockSettings,
-            };
-          },
-        },
+        imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@' }, apiKey: 'mockApiKey2' }),
       });
-      const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+      const service = imgixService({ strapi: strapiInstance });
       // Act
       const uploadDecorator = service.getUploadDecorator();
       // Assert
@@ -182,32 +188,14 @@ describe('Service: IMGIX', () => {
         describe('when uploaded file is image', () => {
           it('should add asset to imgix', async () => {
             // Arrange
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: 'validApiKey' });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
-              uploadPlugin: {
-                service(name: string) {
-                  switch (name) {
-                    case 'image-manipulation':
-                      return {
-                        isImage: jest.fn().mockResolvedValue(true),
-                      };
-                    default:
-                      throw new Error('Unexpected service name');
-                  }
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: 'validApiKey' }),
+              uploadPlugin: getUploadPluginMock(),
               config: {
                 get: jest.fn().mockReturnValue('http://localhost:1337'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.addAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const file = { url: 'some-super-path' };
@@ -222,36 +210,18 @@ describe('Service: IMGIX', () => {
         describe('when uploaded file has absolut path', () => {
           it('should add asset to imgix and change path', async () => {
             // Arrange
-            const mockSettings = jest.fn().mockResolvedValue({
-              apiKey: 'validApiKey',
-              mediaLibrarySourceUrl: 'http://aws.host.com',
-              source: { id: 'sourceId@', url: 'http://imgix.host.com' },
-            });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
-              uploadPlugin: {
-                service(name: string) {
-                  switch (name) {
-                    case 'image-manipulation':
-                      return {
-                        isImage: jest.fn().mockResolvedValue(true),
-                      };
-                    default:
-                      throw new Error('Unexpected service name');
-                  }
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({
+                apiKey: 'validApiKey',
+                mediaLibrarySourceUrl: 'http://aws.host.com',
+                source: { id: 'sourceId@', url: 'http://imgix.host.com' },
+              }),
+              uploadPlugin: getUploadPluginMock(),
               config: {
                 get: jest.fn().mockReturnValue('http://some.super.host.com'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.addAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const file = { url: 'http://aws.host.com/some-super-path' };
@@ -266,32 +236,14 @@ describe('Service: IMGIX', () => {
         describe('when uploaded file is not image', () => {
           it('should add asset to imgix', async () => {
             // Arrange
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: 'validApiKey' });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
-              uploadPlugin: {
-                service(name: string) {
-                  switch (name) {
-                    case 'image-manipulation':
-                      return {
-                        isImage: jest.fn().mockResolvedValue(false),
-                      };
-                    default:
-                      throw new Error('Unexpected service name');
-                  }
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: 'validApiKey' }),
+              uploadPlugin: getUploadPluginMock(false),
               config: {
                 get: jest.fn().mockReturnValue('http://localhost:1337'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.addAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const file = { url: 'not-image-path' };
@@ -307,32 +259,14 @@ describe('Service: IMGIX', () => {
         describe('when uploaded file is image', () => {
           it('should change file url', async () => {
             // Arrange
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: null });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
-              uploadPlugin: {
-                service(name: string) {
-                  switch (name) {
-                    case 'image-manipulation':
-                      return {
-                        isImage: jest.fn().mockResolvedValue(true),
-                      };
-                    default:
-                      throw new Error('Unexpected service name');
-                  }
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: null }),
+              uploadPlugin: getUploadPluginMock(),
               config: {
                 get: jest.fn().mockReturnValue('http://localhost:1337'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.addAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const file = { url: 'second-super-path' };
@@ -347,32 +281,14 @@ describe('Service: IMGIX', () => {
         describe('when uploaded file is image', () => {
           it('should change file url', async () => {
             // Arrange
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: '', url: 'http://some.super.host.com/' }, apiKey: 'validAPIKEY' });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
-              uploadPlugin: {
-                service(name: string) {
-                  switch (name) {
-                    case 'image-manipulation':
-                      return {
-                        isImage: jest.fn().mockResolvedValue(true),
-                      };
-                    default:
-                      throw new Error('Unexpected service name');
-                  }
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: '', url: 'http://some.super.host.com/' }, apiKey: 'validAPIKEY' }),
+              uploadPlugin: getUploadPluginMock(),
               config: {
                 get: jest.fn().mockReturnValue('http://localhost:1337'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.addAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const file = { url: 'second-super-path' };
@@ -389,27 +305,9 @@ describe('Service: IMGIX', () => {
         describe('when uploaded file is image', () => {
           it('should change file url with error log', async () => {
             // Arrange
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: 'invalidApiKey' });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
-              uploadPlugin: {
-                service(name: string) {
-                  switch (name) {
-                    case 'image-manipulation':
-                      return {
-                        isImage: jest.fn().mockResolvedValue(true),
-                      };
-                    default:
-                      throw new Error('Unexpected service name');
-                  }
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: 'invalidApiKey' }),
+              uploadPlugin: getUploadPluginMock(),
               config: {
                 get: jest.fn().mockReturnValue('http://localhost:1337'),
               },
@@ -417,7 +315,7 @@ describe('Service: IMGIX', () => {
                 error: jest.fn(),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.addAsset = jest.fn().mockRejectedValue(new Error('Failed to add asset'));
             const uploadDecorator = service.getUploadDecorator();
             const file = { url: 'second-super-path' };
@@ -437,20 +335,13 @@ describe('Service: IMGIX', () => {
           it('should purge asset', async () => {
             // Arrange
             const sourceURL = 'http://imgix.host.com';
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'source', url: sourceURL }, apiKey: 'validApiKey' });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'source', url: sourceURL }, apiKey: 'validApiKey' }),
               config: {
                 get: jest.fn().mockReturnValue('http://some.super.host.com'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.purgeAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const assetPath = `/some-super-path`;
@@ -465,20 +356,13 @@ describe('Service: IMGIX', () => {
           it('should not purging asset', async () => {
             // Arrange
             const sourceURL = 'http://imgix.host.com';
-            const mockSettings = jest.fn().mockResolvedValue({ source: { id: 'source', url: sourceURL }, apiKey: 'validApiKey' });
             const strapiInstance = getStrapiMock({
-              imgixPlugin: {
-                service() {
-                  return {
-                    getSettings: mockSettings,
-                  };
-                },
-              },
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'source', url: sourceURL }, apiKey: 'validApiKey' }),
               config: {
                 get: jest.fn().mockReturnValue('http://some.super.host.com'),
               },
             });
-            const service = imgixService({ strapi: strapiInstance as unknown as Strapi });
+            const service = imgixService({ strapi: strapiInstance });
             service.purgeAsset = jest.fn();
             const uploadDecorator = service.getUploadDecorator();
             const assetPath = `/some-super-path`;
@@ -489,9 +373,7 @@ describe('Service: IMGIX', () => {
             expect(service.purgeAsset).not.toHaveBeenCalled();
           });
         });
-
       });
-
     });
   });
 });

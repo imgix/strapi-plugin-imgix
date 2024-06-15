@@ -5,7 +5,7 @@ import { Main } from '@strapi/design-system/Main';
 import { Stack } from '@strapi/design-system/Stack';
 import { Typography } from '@strapi/design-system/Typography';
 import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 import React, { useCallback } from 'react';
