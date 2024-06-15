@@ -30,7 +30,7 @@ describe('Bootstrap', () => {
       });
     });
     describe('when config exist in store', () => {
-      const strapiMock = getStrapiMock({ config: {} });
+      const strapiMock = getStrapiMock({ storeConfig: {} });
       beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Strapi }));
 
       it('should do not save config', async () => {

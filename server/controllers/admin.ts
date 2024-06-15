@@ -1,7 +1,7 @@
 import { isNil } from 'lodash';
 import { StrapiContext } from '../../@types';
 import permissions from '../../permissions';
-import { permissionsChecker, RequestCtx } from '../decorators';
+import { permissionsChecker } from '../decorators';
 import { getService } from '../utils';
 import { ConfigData, getAPIValidator, getSettingsValidator } from '../validators';
 
@@ -17,7 +17,7 @@ export default ({ strapi }: StrapiContext) => {
     },
     updateSettings: {
       permissions: [permissions.render(permissions.settings.change)],
-      async apply(ctx: RequestCtx) {
+      async apply(ctx) {
         try {
           const { apiKey: newApiKey } = ctx.request.body as ConfigData;
           const currentConfig = await settingsService.getSettings(true);
@@ -34,7 +34,7 @@ export default ({ strapi }: StrapiContext) => {
     },
     validateAPIKey: {
       permissions: [permissions.render(permissions.settings.change)],
-      async apply(ctx: RequestCtx) {
+      async apply(ctx) {
         try {
           const { apiKey } = await getAPIValidator(ctx.request.body);
           return imgixService.validateAPIKey(apiKey);

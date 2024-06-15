@@ -7,4 +7,6 @@ export const imgixServiceMock = {
   getUploadDecorator: jest.fn(() => uploadDecoratorMock),
 };
 
-export const settingsServiceMock = {};
+export const settingsServiceMock = {
+  getSettings: jest.fn(),
+};

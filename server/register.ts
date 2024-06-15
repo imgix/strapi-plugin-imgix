@@ -8,7 +8,7 @@ type ExtendedFile = File & {
   url?: string;
 }
 export default async ({ strapi }: { strapi: Strapi }) => {
-  const uploadDecorator = await getService(strapi, 'imgix').getUploadDecorator();
+  const uploadDecorator = getService(strapi, 'imgix').getUploadDecorator();
   const provider = strapi.plugin('upload').provider;
 
   Object.keys(provider).forEach((key) => {
