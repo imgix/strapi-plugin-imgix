@@ -1,19 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="6" failures="0" errors="0" time="4.416">
-  <testsuite name="Bootstrap" errors="0" failures="0" skipped="0" timestamp="2024-06-12T06:39:15" time="4.036" tests="3">
-    <testcase classname="Bootstrap saveConfig when config not exist in store should save default config in to store" name="Bootstrap saveConfig when config not exist in store should save default config in to store" time="0.022">
-    </testcase>
-    <testcase classname="Bootstrap saveConfig when config exist in store should do not save config" name="Bootstrap saveConfig when config exist in store should do not save config" time="0.001">
-    </testcase>
-    <testcase classname="Bootstrap addPermissions should add permission plugin" name="Bootstrap addPermissions should add permission plugin" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Register" errors="0" failures="0" skipped="0" timestamp="2024-06-12T06:39:15" time="4.182" tests="3">
-    <testcase classname="Register when call upload from provider should call upload from decorator" name="Register when call upload from provider should call upload from decorator" time="0.006">
+<testsuites name="jest tests" tests="27" failures="0" errors="0" time="3.067">
+  <testsuite name="Register" errors="0" failures="0" skipped="0" timestamp="2024-06-15T13:59:22" time="2.668" tests="3">
+    <testcase classname="Register when call upload from provider should call upload from decorator" name="Register when call upload from provider should call upload from decorator" time="0.004">
     </testcase>
     <testcase classname="Register when provider implement upload via stream should call uploadStream from decorator" name="Register when provider implement upload via stream should call uploadStream from decorator" time="0">
     </testcase>
-    <testcase classname="Register when user remove asset should call delete from decorator" name="Register when user remove asset should call delete from decorator" time="0.002">
+    <testcase classname="Register when user remove asset should call delete from decorator" name="Register when user remove asset should call delete from decorator" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Service: IMGIX" errors="0" failures="0" skipped="0" timestamp="2024-06-15T13:59:22" time="2.68" tests="21">
+    <testcase classname="Service: IMGIX validateAPIKey should return valid true if the response is ok" name="Service: IMGIX validateAPIKey should return valid true if the response is ok" time="0.004">
+    </testcase>
+    <testcase classname="Service: IMGIX validateAPIKey should return valid false if the response is not ok" name="Service: IMGIX validateAPIKey should return valid false if the response is not ok" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX addAsset should add an asset" name="Service: IMGIX addAsset should add an asset" time="0.001">
+    </testcase>
+    <testcase classname="Service: IMGIX addAsset should throw an error if the response is not ok" name="Service: IMGIX addAsset should throw an error if the response is not ok" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX purgeAsset should purge an asset" name="Service: IMGIX purgeAsset should purge an asset" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX purgeAsset should throw an error if the response is not ok" name="Service: IMGIX purgeAsset should throw an error if the response is not ok" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator should return an object with uploadStream, upload and delete methods" name="Service: IMGIX getUploadDecorator should return an object with uploadStream, upload and delete methods" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator uploadStream when configuration is complete when uploaded file is image should add asset to imgix" name="Service: IMGIX getUploadDecorator uploadStream when configuration is complete when uploaded file is image should add asset to imgix" time="0.001">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator uploadStream when configuration is complete when uploaded file has absolut path should add asset to imgix and change path" name="Service: IMGIX getUploadDecorator uploadStream when configuration is complete when uploaded file has absolut path should add asset to imgix and change path" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator uploadStream when configuration is complete when uploaded file is not image should add asset to imgix" name="Service: IMGIX getUploadDecorator uploadStream when configuration is complete when uploaded file is not image should add asset to imgix" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator uploadStream when API KEY is not provided or source id when uploaded file is image should change file url" name="Service: IMGIX getUploadDecorator uploadStream when API KEY is not provided or source id when uploaded file is image should change file url" time="0.001">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator uploadStream when API KEY is not provided or source id when uploaded file is image should change file url" name="Service: IMGIX getUploadDecorator uploadStream when API KEY is not provided or source id when uploaded file is image should change file url" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator uploadStream when addAsset failed when uploaded file is image should change file url with error log" name="Service: IMGIX getUploadDecorator uploadStream when addAsset failed when uploaded file is image should change file url with error log" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator upload when configuration is complete when uploaded file is image should add asset to imgix" name="Service: IMGIX getUploadDecorator upload when configuration is complete when uploaded file is image should add asset to imgix" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator upload when configuration is complete when uploaded file has absolut path should add asset to imgix and change path" name="Service: IMGIX getUploadDecorator upload when configuration is complete when uploaded file has absolut path should add asset to imgix and change path" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator upload when configuration is complete when uploaded file is not image should add asset to imgix" name="Service: IMGIX getUploadDecorator upload when configuration is complete when uploaded file is not image should add asset to imgix" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator upload when API KEY is not provided or source id when uploaded file is image should change file url" name="Service: IMGIX getUploadDecorator upload when API KEY is not provided or source id when uploaded file is image should change file url" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator upload when API KEY is not provided or source id when uploaded file is image should change file url" name="Service: IMGIX getUploadDecorator upload when API KEY is not provided or source id when uploaded file is image should change file url" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator upload when addAsset failed when uploaded file is image should change file url with error log" name="Service: IMGIX getUploadDecorator upload when addAsset failed when uploaded file is image should change file url with error log" time="0">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator delete when configuration is complete when asset path starts with source url should purge asset" name="Service: IMGIX getUploadDecorator delete when configuration is complete when asset path starts with source url should purge asset" time="0.001">
+    </testcase>
+    <testcase classname="Service: IMGIX getUploadDecorator delete when configuration is complete when asset path not starts with source url should not purging asset" name="Service: IMGIX getUploadDecorator delete when configuration is complete when asset path not starts with source url should not purging asset" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Bootstrap" errors="0" failures="0" skipped="0" timestamp="2024-06-15T13:59:22" time="2.805" tests="3">
+    <testcase classname="Bootstrap saveConfig when config not exist in store should save default config in to store" name="Bootstrap saveConfig when config not exist in store should save default config in to store" time="0.003">
+    </testcase>
+    <testcase classname="Bootstrap saveConfig when config exist in store should do not save config" name="Bootstrap saveConfig when config exist in store should do not save config" time="0.001">
+    </testcase>
+    <testcase classname="Bootstrap addPermissions should add permission plugin" name="Bootstrap addPermissions should add permission plugin" time="0">
     </testcase>
   </testsuite>
 </testsuites>

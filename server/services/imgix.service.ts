@@ -14,19 +14,19 @@ export const imgixService = ({ strapi }: StrapiContext) => {
 
     // for local development
     const serverHost = strapi.config.get<string>('server.host', 'http://localhost:1337');
-    const host = !mediaLibrarySourceUrl && serverHost === '0.0.0.0' ? 'http://localhost:1337' : mediaLibrarySourceUrl;
-
+    const host = !mediaLibrarySourceUrl && serverHost === '0.0.0.0' ? 'http://localhost:1337/' : mediaLibrarySourceUrl;
     const { isImage } = strapi.plugin('upload').service('image-manipulation');
     if (source?.url && await isImage(file)) {
       const isUrlAbsolute = file.url?.startsWith('http');
+      const newURL = (isUrlAbsolute ? file.url : `${host}${file.url}`)?.replace(host, source.url);
       try {
         if (source.id && file.url && apiKey) {
           await service.addAsset(file.url);
         }
-        file.url = (isUrlAbsolute ? file.url : `${host}${file.url}`)?.replace(host, source.url);
+        file.url = newURL;
         return Promise.resolve();
       } catch (e: any) {
-        file.url = (isUrlAbsolute ? file.url : `${host}${file.url}`)?.replace(host, source.url);
+        file.url = newURL;
         strapi.log.error(`uploadStream: ${e?.message}`);
       }
     }
@@ -34,14 +34,18 @@ export const imgixService = ({ strapi }: StrapiContext) => {
 
 
   const service = {
-    async getUploadDecorator() {
+    getUploadDecorator() {
       return {
         uploadStream: addFileToService,
         upload: addFileToService,
         async delete(file: ExtendedFile) {
           const { source, apiKey } = await getService(strapi, 'settings').getSettings();
           if (source && apiKey && file.url && file.url.startsWith(source.url)) {
-            return service.purgeAsset(file.url);
+            try {
+              return await service.purgeAsset(file.url);
+            }catch (e: any) {
+              strapi.log.error(`delete: ${e?.message}`);
+            }
           }
         },
       };
@@ -66,7 +70,7 @@ export const imgixService = ({ strapi }: StrapiContext) => {
       if (response.ok) {
         return;
       }
-      throw new Error('Failed to add asset');
+      return Promise.reject(new Error('Failed to add asset'));
     },
     async purgeAsset(path: string) {
       const config = await settingsService.getSettings(true);
