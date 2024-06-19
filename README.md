@@ -44,11 +44,10 @@ A Strapi Plugin to integrate [imgix](www.imgix.com) with your Strapi Media Libra
 
 If you manage your assets using Strapi's built-in Media Library, this plugin allows you to rewrite the asset URLs so that they are served from an imgix Source.
 
-### Use asset from your imgix Source in the Strapi Media Library
+#### Integration with Strapi Upload Providers
 
-If you use imgix to store your assets, you can use this plugin to configure the Strapi Media Library to fetch and upload assets directly from your imgix Source. 
+If your imgix Source is configured with a storage provider like Amazon S3, you can use this plugin to configure the Strapi Media Library to fetch assets directly from your imgix Source. You should also configure the corresponding Strapi Upload [Provider](https://market.strapi.io/providers).
 
-This is only supported for non-Webfolder [Source types](https://docs.imgix.com/getting-started/setup/creating-sources).
 
 ## Requirements
 
@@ -99,7 +98,7 @@ You can now [configure](#configuration) the plugin.
 
 ## Configuration
 
-To use the **imgix plugin**, you must first [create an **imgix account**](https://docs.imgix.com/getting-started/setup/quick-start-guide) and [Source](https://docs.imgix.com/getting-started/setup/creating-sources) if you haven't already. 
+To use the **imgix plugin**, you must first [create an **imgix account**](https://docs.imgix.com/getting-started/setup/quick-start-guide) and [Source](https://docs.imgix.com/getting-started/setup/creating-sources) if you haven't already.
 
 Then you can configure your Strapi instance using the [dedicated Settings page](#settings-page-configuration).
 
@@ -119,7 +118,7 @@ You must specify following properties:
 - Media Library Source URL - Example: `http://localhost:1337/public/images/`
 - imgix Source URL - Example: `https://sdk-test.imgix.net`
 
-When using `Other` source types, you must fill our the [Source ID](https://docs.imgix.com/apis/management/overview#making-requests) and [API Key](https://dashboard.imgix.com/api-keys) fields. This enables the plugin to fetch and upload assets using **imgix Management API**.
+When using `Other` source types, you must fill our the [Source ID](https://docs.imgix.com/apis/management/overview#making-requests) and [API Key](https://dashboard.imgix.com/api-keys) fields. This enables the plugin to [purge](https://docs.imgix.com/apis/management/purges) and [add](https://docs.imgix.com/apis/management/assets#adding-an-asset) assets using the **imgix Management API**.
 
 <div style="margin: 20px 0" align="center">
   <img style="width: 100%; height: auto;" src="public/assets/configuration.png" alt="Plugin configuration" />
