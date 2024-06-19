@@ -82,14 +82,16 @@ export const Settings = () => {
     mutationFn: (apiKey: string) => http.put<{ apiKey: string }, { valid: boolean }>('/settings/validate', { apiKey }),
   });
 
+  const addTrailingSlashes = (value: string) => value.endsWith('/') ? value : `${value}/`;
+
   const preparePayload = useCallback((values: FormData) => {
     const source = pickBy({
       id: values.sourceType === SOURCE_TYPES.OTHER && values.sourceId ? values.sourceId : undefined,
       type: values.sourceType,
-      url: values.sourceUrl ? values.sourceUrl : undefined,
+      url: values.sourceUrl ? addTrailingSlashes(values.sourceUrl) : undefined,
     }, (value) => value !== undefined) as ConfigData['source'];
     const payload: ConfigData = {
-      mediaLibrarySourceUrl: values.mediaLibrarySourceUrl,
+      mediaLibrarySourceUrl: values.mediaLibrarySourceUrl ? addTrailingSlashes(values.mediaLibrarySourceUrl) : values.mediaLibrarySourceUrl,
       source: isEmpty(source) ? { url: '', type: SOURCE_TYPES.FOLDER } : source,
     };
     if (values.sourceType === SOURCE_TYPES.OTHER) {
