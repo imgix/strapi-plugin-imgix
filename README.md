@@ -115,7 +115,7 @@ You can access the configuration page via `Strapi Settings -> Section: IMGIX Plu
 You must specify following properties:
 
 - Source - `Webfolder` or `Other` (S3, Azure, R2, etc)
-- Media Library Source URL - Example: `http://localhost:1337/public/images/`
+- Media Library Source URL - Example: `http://localhost:1337/uploads/`
 - imgix Source URL - Example: `https://sdk-test.imgix.net`
 
 When using `Other` source types, you must fill our the [Source ID](https://docs.imgix.com/apis/management/overview#making-requests) and [API Key](https://dashboard.imgix.com/api-keys) fields. This enables the plugin to [purge](https://docs.imgix.com/apis/management/purges) and [add](https://docs.imgix.com/apis/management/assets#adding-an-asset) assets using the **imgix Management API**.
@@ -123,6 +123,22 @@ When using `Other` source types, you must fill our the [Source ID](https://docs.
 <div style="margin: 20px 0" align="center">
   <img style="width: 100%; height: auto;" src="public/assets/configuration.png" alt="Plugin configuration" />
 </div>
+
+> [!NOTE]
+> **URL overwrite logic**
+>
+> Source Type: `Webfolder`<br />
+> Media Library Source URL: `https://mydomain.com/uploads/`<br />
+> Webfolder Base URL / Subdomain: `https://sdk-test.imgix.net`<br />
+> Example: `https://mydomain.com/uploads/sample.jpg` →  `https://sdk-test.imgix.net/sample.jpg`<br /><br />
+> *You must configure your imgix source to point into the **root** of your web folder, not the path like `uploads`*
+>
+> <hr />
+>
+> Source Type: `Other`<br />
+> Media Library Source URL: `https://my-cdn-solution.com/`<br />
+> Source URL / Subdomain: `https://sdk-test.imgix.net`<br />
+> Example: `https://my-cdn-solution.com/sample.jpg` →  `https://sdk-test.imgix.net/sample.jpg`
 
 > [!NOTE]
 > Default configuration for your plugin is fetched from `config/plugins.{js,ts}` or directly from the plugin itself. To customize the default state to revert to, see the [file configuration](#file-configuration) section.

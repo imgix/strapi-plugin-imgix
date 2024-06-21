@@ -9,11 +9,20 @@ const en = {
           success: 'Settings saved',
           error: 'Failed to save settings: {details}',
         },
-        restore: {
-          success: 'Settings restored',
-          error: 'Failed to restore settings: {details}',
+        admin: {
+          restore: {
+            success: 'Settings restored',
+            error: 'Failed to restore settings: {details}',
+          },
+          sync: {
+            success: 'Media Library synchronized',
+            error: 'Failed to synchronize your Media Library: {details}',
+          },
+          desync: {
+            success: 'Media Library desynchronized',
+            error: 'Failed to desynchronize your Media Library: {details}',
+          },
         },
-
       },
       header: {
         title: 'imgix',
@@ -56,7 +65,7 @@ const en = {
           },
           advance: {
             title: 'Advanced configuration',
-            description: 'For other Source Types like AWS S3 or Microsoft Azure.',
+            description: 'For other Source Types like AWS S3 or Microsoft Azure',
             apiKey: {
               label: 'API Key',
               hint: 'Your imgix Management API Key',
@@ -78,21 +87,52 @@ const en = {
             },
           },
         },
-        restore: {
-          title: 'Restore configuration',
-          subtitle: 'Overwrite your current configuration settings by restoring the plugin configuration file.',
-          confirmation: {
-            header: 'Confirmation',
-            description: 'Are you sure you would like to restore configuration settings to default?',
-            button: {
-              confirm: 'Yes, restore',
+        admin: {
+          title: 'Administration actions',
+          restore: {
+            title: 'Restore configuration',
+            subtitle: 'Overwrite your current configuration settings by restoring the plugin configuration file',
+            confirmation: {
+              header: 'Confirmation',
+              description: 'Are you sure you would like to restore configuration settings to default?',
+              button: {
+                confirm: 'Yes, restore',
+              },
             },
           },
-        },
+          sync: {
+            title: 'Synchronize Strapi Media Library',
+            subtitle: 'Force to synchronize and overwrite all images paths in Strapi Media Library by configured imgix Source URL',
+            confirmation: {
+              header: 'Confirmation',
+              description: 'Are you sure you would like to force synchronization of Strapi Media Library for all the images paths?',
+              alert: 'This action will overwrite all the images paths in Strapi Media Library with imgix Source URL.',
+              button: {
+                confirm: 'Yes, synchronize',
+              },
+            },
+          },
+          desync: {
+            title: 'Desynchronize Strapi Media Library',
+            subtitle: 'Force to desynchronize and overwrite all images paths in Strapi Media Library from imgix Source URL to configured Media Library Source URL',
+            confirmation: {
+              header: 'Confirmation',
+              description: 'Are you sure you would like to force desynchronization of Strapi Media Library for all the images paths?',
+              alert: 'This action will overwrite all the images paths in Strapi Media Library back to your configured Media Library Source URL.',
+              button: {
+                confirm: 'Yes, desynchronize',
+              },
+            },
+          },
+        }
       },
       actions: {
         save: 'Save',
-        restore: 'Restore',
+        admin: {
+          restore: 'Restore',
+          sync: 'Sync Media Library',
+          desync: 'Desync Media Library',
+        }
       },
     },
   },
@@ -100,7 +140,7 @@ const en = {
     confirmation: {
       dialog: {
         header: 'Confirmation',
-        description: 'Are you sure you want to delete this item?',
+        description: 'Are you sure you want to perform this action?',
         button: {
           cancel: 'Cancel',
           confirm: 'Confirm',

@@ -22,7 +22,7 @@ import permissions from '../../permissions';
 import { getMessage } from '../../utils';
 import { AdvanceSection } from './sections/AdvanceSection';
 import { BaseSection } from './sections/BaseSection';
-import { RestoreSection } from './sections/RestoreSection';
+import { AdminSection } from './sections/AdminSection';
 import { HeaderLink } from './styles';
 import { FormData } from './types';
 
@@ -184,7 +184,7 @@ export const Settings = () => {
         validateOnChange={false}
         validateOnBlur={false}
       >
-        {({ handleSubmit, values, errors, handleChange, setValues }) => {
+        {({ handleSubmit, values, errors, dirty, handleChange, setValues }) => {
           return (
             <form noValidate onSubmit={handleSubmit}>
               <HeaderLayout
@@ -241,9 +241,10 @@ export const Settings = () => {
                     </Box>)}
                   <CheckPermissions permissions={permissions.settingsChange}>
                     <Box {...boxDefaultProps}>
-                      <RestoreSection
+                      <AdminSection
                         setValues={setValues}
-                        disabled={asyncActionInProgress} />
+                        disabled={asyncActionInProgress}
+                        dirtyForm={dirty} />
                     </Box>
                   </CheckPermissions>
                 </Stack>
