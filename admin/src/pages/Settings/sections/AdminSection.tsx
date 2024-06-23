@@ -77,7 +77,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
 
   const forceSyncMutation = useMutation({
     mutationKey: [camelCase(pluginId), 'sync-library'],
-    mutationFn: () => http.put<{}, ConfigData>('/settings/library/sync', {}),
+    mutationFn: () => http.put<{}, ConfigData>('/settings/library/synchronize', {}),
     throwOnError: false,
     onSuccess: () => {
       toggleNotification({
@@ -99,7 +99,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
 
   const forceDesyncMutation = useMutation({
     mutationKey: [camelCase(pluginId), 'desync-library'],
-    mutationFn: () => http.put<{}, ConfigData>('/settings/library/desync', {}),
+    mutationFn: () => http.put<{}, ConfigData>('/settings/library/restore', {}),
     throwOnError: false,
     onSuccess: () => {
       toggleNotification({

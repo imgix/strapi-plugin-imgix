@@ -30,5 +30,21 @@ export default [
     config: {
       policies: [],
     },
-  }
+  },
+  {
+    method: 'PUT',
+    path: '/settings/library/synchronize',
+    handler: 'admin.librarySynchronize',
+    config: {
+      policies: [],
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/settings/library/restore',
+    handler: 'admin.restoreLibrary',
+    config: {
+      policies: [],
+    },
+  },
 ];
