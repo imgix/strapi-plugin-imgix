@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import imgixService from '../../services/imgix.service';
 import { ConfigData } from '../../validators';
 import { getStrapiMock } from '../utils/strapi';
@@ -28,6 +29,65 @@ const getImgixPluginSettingsMock = (settings: DeepPartial<ConfigData>) => ({
     };
   },
 });
+
+async function migrateTest(method: 'librarySynchronize' | 'restoreLibrary', from: string, to: string) {
+  const isMigrate = method === 'librarySynchronize';
+  const mockFiles = [
+    {
+      id: 1,
+      url: `${from}/some-super-path`,
+    },
+    {
+      id: 2,
+      url: `${from}/some-super-path`,
+      formats: {},
+    },
+    {
+      id: 3,
+      url: `${from}/some-other-path`,
+      formats: {
+        small: {
+          url: `${from}/some-other-path/small`,
+        },
+      },
+    },
+  ];
+  const findManyQueryMock = jest.fn().mockResolvedValue(mockFiles);
+  const updateQueryMock = jest.fn().mockResolvedValue({});
+  const queryMock = jest.fn().mockReturnValue({
+    findMany: findManyQueryMock,
+    update: updateQueryMock,
+  });
+  // Arrange
+  const strapiInstance = getStrapiMock({
+    // we have to switch sources and mediaLibrarySourceUrl because of the way the mock is set up
+    imgixPlugin: getImgixPluginSettingsMock({ source: { url: isMigrate ? to : from }, mediaLibrarySourceUrl: isMigrate ? from : to }),
+    config: {
+      get: jest.fn().mockReturnValue(6),
+    },
+    query: queryMock,
+  });
+  const service = imgixService({ strapi: strapiInstance });
+  // Act
+  await service[method]();
+  // Assert
+  expect(queryMock).toHaveBeenCalledWith('plugin::upload.file');
+  expect(updateQueryMock).toHaveBeenCalledTimes(3);
+  mockFiles.forEach((file, index) => {
+    const formats = Object.keys(file.formats || {}).reduce((acc, key) => {
+      // @ts-ignore
+      acc[key].url = acc[key].url.replace(from, to);
+      return acc;
+    }, file.formats || {});
+    expect(updateQueryMock.mock.calls[index][0]).toEqual({
+      where: { id: file.id },
+      data: {
+        formats: isEmpty(formats) ? null : formats,
+        url: file.url.replace(from, to),
+      },
+    });
+  });
+}
 
 describe('Service: IMGIX', () => {
   beforeEach(() => {
@@ -260,7 +320,7 @@ describe('Service: IMGIX', () => {
           it('should change file url', async () => {
             // Arrange
             const strapiInstance = getStrapiMock({
-              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: null }),
+              imgixPlugin: getImgixPluginSettingsMock({ source: { id: 'sourceId@', url: 'http://some.super.host.com/' }, apiKey: undefined }),
               uploadPlugin: getUploadPluginMock(),
               config: {
                 get: jest.fn().mockReturnValue('http://localhost:1337'),
@@ -374,6 +434,20 @@ describe('Service: IMGIX', () => {
           });
         });
       });
+    });
+  });
+  describe('librarySynchronize', () => {
+    it('should replace media library url to source url', async () => {
+      const imgixSourceUrl = 'http://imgix.host.com';
+      const mediaLibrarySourceUrl = 'http://aws.host.com';
+      await migrateTest('librarySynchronize', mediaLibrarySourceUrl, imgixSourceUrl);
+    });
+  });
+  describe('restoreLibrary', () => {
+    it('should restore media library for assets added to imgix', async () => {
+      const imgixSourceUrl = 'http://imgix.host.com';
+      const mediaLibrarySourceUrl = 'http://aws.host.com';
+      await migrateTest('restoreLibrary', imgixSourceUrl, mediaLibrarySourceUrl);
     });
   });
 });

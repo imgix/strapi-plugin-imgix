@@ -41,17 +41,17 @@ export const imgixService = ({ strapi }: StrapiContext) => {
     }
   }
 
-  const migrateFiles = async (sourceUrl: string, targetUrl: string) => {
-    const maxDBPool = strapi.config.get('database.pool.max', 10) / 2 ;
+  const migrateFiles = async (fromUrl: string, targetUrl: string) => {
+    const maxDBPool = Math.ceil(strapi.config.get('database.pool.max', 10) / 2);
     const fileRepository = strapi.query(FILE_MODEL_UID);
 
-    const data = await fileRepository.findMany({ where: { url: { $startsWith: sourceUrl } } });
+    const data = await fileRepository.findMany({ where: { url: { $startsWith: fromUrl } } });
     const chunks = createChunks(data, maxDBPool);
 
     for (const chunk of chunks) {
       await Promise.all(chunk.map(async (file) => {
         const formats = Object.keys(file.formats || {}).reduce((acc, key) => {
-          acc[key].url = acc[key].url.replace(sourceUrl, targetUrl);
+          acc[key].url = acc[key].url.replace(fromUrl, targetUrl);
           return acc;
         }, file.formats);
 
@@ -61,7 +61,7 @@ export const imgixService = ({ strapi }: StrapiContext) => {
           },
           data: {
             formats: isEmpty(formats) ? null : formats,
-            url: file.url.replace(sourceUrl, targetUrl),
+            url: file.url.replace(fromUrl, targetUrl),
           },
         });
       }));
@@ -131,6 +131,7 @@ export const imgixService = ({ strapi }: StrapiContext) => {
     },
     async librarySynchronize() {
       const config = await settingsService.getSettings(true);
+      // sync files will be automatically added to the imgix service with the first fetch request
       await migrateFiles(config.mediaLibrarySourceUrl, config.source.url);
 
       return Promise.resolve({});
