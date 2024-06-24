@@ -86,7 +86,7 @@ export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibraryS
             hint={formatMessage({
               id: `${camelCase(pluginId)}.page.settings.sections.form.base.source.${sourceType}.hint`,
             }, {
-              example: <em>https://my-source.imgix.net</em>,
+              example: <em>https://my-source.imgix.net/</em>,
             })}
             disabled={disabled}
             required
