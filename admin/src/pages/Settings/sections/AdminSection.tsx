@@ -105,7 +105,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
       toggleNotification({
         type: 'success',
         message: {
-          id: `${camelCase(pluginId)}.page.settings.notification.admin.sync.success`,
+          id: `${camelCase(pluginId)}.page.settings.notification.admin.desync.success`,
         },
       });
     },
@@ -113,7 +113,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
       toggleNotification({
         type: 'warning',
         message: {
-          id: `${camelCase(pluginId)}.page.settings.notification.admin.sync.error`,
+          id: `${camelCase(pluginId)}.page.settings.notification.admin.desync.error`,
         },
       });
     },
@@ -225,7 +225,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
 
           <ConfirmationDialog
             isVisible={isForceSyncVisible}
-            isActionAsync={false}
+            isActionAsync={forceSyncMutation.isPending}
             header={getMessage(
               'page.settings.sections.admin.sync.confirmation.header',
             )}
@@ -276,7 +276,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
 
           <ConfirmationDialog
             isVisible={isForceDesyncVisible}
-            isActionAsync={false}
+            isActionAsync={forceDesyncMutation.isPending}
             header={getMessage(
               'page.settings.sections.admin.desync.confirmation.header',
             )}

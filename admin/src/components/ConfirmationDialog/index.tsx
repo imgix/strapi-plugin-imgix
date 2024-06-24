@@ -63,6 +63,7 @@ const ConfirmationDialog = ({
           variant="danger-light"
           startIcon={iconConfirm || check}
           disabled={isActionAsync}
+          loading={isActionAsync}
         >
           {labelConfirm ||
             getMessage(
