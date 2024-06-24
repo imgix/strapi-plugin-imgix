@@ -45,7 +45,7 @@ export const imgixService = ({ strapi }: StrapiContext) => {
     const maxDBPool = Math.ceil(strapi.config.get('database.pool.max', 10) / 2);
     const fileRepository = strapi.query(FILE_MODEL_UID);
 
-    const data = await fileRepository.findMany({ where: { url: { $startsWith: fromUrl } } });
+    const data = await fileRepository.findMany({ where: { url: { $startsWith: fromUrl }, mime: { $contains: 'image' }} });
     const chunks = createChunks(data, maxDBPool);
 
     for (const chunk of chunks) {
