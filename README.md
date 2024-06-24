@@ -218,6 +218,20 @@ module.exports = [
 - `source.id` - your **imgix** source id as a 24-character string ([setup](https://docs.imgix.com/apis/management/overview#making-requests))
 - `source.url` - you **imgix** source url / subdomain. Example: `https://sdk-test.imgix.net`
 
+## Administration actions
+
+<div style="margin: 20px 0" align="center">
+  <img style="width: 100%; height: auto;" src="public/assets/administration.png" alt="Plugin configuration" />
+</div>
+
+Plugin provides bunch of administration actions you can perform.
+
+- **Restore configuration** - you're forcing plugin to get configuration from the `config/plugins.{js,ts}` or `config/<env>/plugins.{js,ts}` file and overwrite current settings.
+- **Sync Media Library** - Assets existing in Strapi Media Library are forced to work with the plugin. Their paths are overwritten based on current plugin configuration, like *Media Library Source URL* →  *Source URL / Subdomain*.
+- **Desync Media Library** - Assets existing in Strapi Media Library are forced work with your configured provider. Their paths are overwritten back based on current plugin configuration, like *Source URL / Subdomain* →  *Media Library Source URL*.
+
+
+
 ## Rendering images
 
 Images provided by the Strapi Media Library with imgix Integration Plugin runing enables you to use the full set of **imgix** functionalities out of the box using a Render API query parameters or SDKs.
