@@ -62,7 +62,7 @@ In our minimum support we're following [official Node.js releases timelines](htt
 
 **Supported Strapi versions**:
 
-- Strapi v4.24.x (recently tested)
+- Strapi v4.25.x (recently tested)
 - Strapi v4.x
 
 ## Installation
