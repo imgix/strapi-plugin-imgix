@@ -6,7 +6,7 @@ import { Stack } from '@strapi/design-system/Stack';
 import { Typography } from '@strapi/design-system/Typography';
 import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 import React, { useCallback } from 'react';
 import { useIntl } from 'react-intl';
@@ -104,12 +104,15 @@ export const Settings = () => {
     return payload;
   }, [data]);
 
-  const onSubmitForm = async (values: FormData) => {
+  const onSubmitForm = async (values: FormData, actions: FormikHelpers<FormData>) => {
     setSubmitInProgress(true);
     const payload = preparePayload(values);
     lockApp();
     try {
       await saveSettings.mutateAsync(payload);
+      actions.resetForm({
+        values,
+      });
     } catch {
 
     } finally { 
