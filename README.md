@@ -4,7 +4,7 @@
 
 A Strapi Plugin to integrate [imgix](www.imgix.com) with your Strapi Media Library.
 
-[![npm version](https://img.shields.io/github/package-json/v/imgix/strapi-plugin-imgix?label=npm&logo=npm)](https://www.npmjs.com/package/@imgix/strapi-plugin-imgix)
+[![npm version](https://img.shields.io/github/package-json/v/imgix/strapi-plugin-imgix?label=npm&logo=npm)](https://www.npmjs.com/package/strapi-plugin-imgix)
 [![Build Status](https://circleci.com/gh/imgix/strapi-plugin-imgix.svg?style=shield)](https://circleci.com/gh/imgix/strapi-plugin-imgix)
 
 <!-- [![Downloads](https://img.shields.io/npm/dm/@imgix/strapi-plugin-imgix.svg)](https://www.npmjs.com/package/@imgix/strapi-plugin-imgix) -->
@@ -229,8 +229,6 @@ Plugin provides bunch of administration actions you can perform.
 - **Restore configuration** - you're forcing plugin to get configuration from the `config/plugins.{js,ts}` or `config/<env>/plugins.{js,ts}` file and overwrite current settings.
 - **Sync Media Library** - Assets existing in Strapi Media Library are forced to work with the plugin. Their paths are overwritten based on current plugin configuration, like *Media Library Source URL* →  *Source URL / Subdomain*.
 - **Desync Media Library** - Assets existing in Strapi Media Library are forced work with your configured provider. Their paths are overwritten back based on current plugin configuration, like *Source URL / Subdomain* →  *Media Library Source URL*.
-
-
 
 ## Rendering images
 
