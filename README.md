@@ -124,21 +124,9 @@ When using `Other` source types, you must fill our the [Source ID](https://docs.
   <img style="width: 100%; height: auto;" src="public/assets/configuration.png" alt="Plugin configuration" />
 </div>
 
-> [!NOTE]
-> **URL overwrite logic**
->
-> Source Type: `Webfolder`<br />
-> Media Library Source URL: `https://mydomain.com/uploads/`<br />
-> Webfolder Base URL / Subdomain: `https://sdk-test.imgix.net`<br />
-> Example: `https://mydomain.com/uploads/sample.jpg` →  `https://sdk-test.imgix.net/sample.jpg`<br /><br />
-> *You must configure your imgix source to point into the **root** of your web folder, not the path like `uploads`*
->
-> <hr />
->
-> Source Type: `Other`<br />
-> Media Library Source URL: `https://my-cdn-solution.com/`<br />
-> Source URL / Subdomain: `https://sdk-test.imgix.net`<br />
-> Example: `https://my-cdn-solution.com/sample.jpg` →  `https://sdk-test.imgix.net/sample.jpg`
+**How Asset URL Paths Get Re-Written**
+Once you've configured the plugin, the plugin will automatically rewrite the URLs of your assets to point to the imgix URL.
+For example, if you have an image at `https://mydomain.com/uploads/amsterdam.jpg`, the plugin will rewrite the URL to `https://sdk-test.imgix.net/amsterdam.jpg`. You must configure your imgix source to point into the **resources path** of your web folder, like `/uploads`.
 
 > [!NOTE]
 > Default configuration for your plugin is fetched from `config/plugins.{js,ts}` or directly from the plugin itself. To customize the default state to revert to, see the [file configuration](#file-configuration) section.
