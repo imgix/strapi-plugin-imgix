@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-imgix",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Strapi - imgix Integration Plugin",
   "strapi": {
     "name": "imgix",
