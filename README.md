@@ -125,8 +125,8 @@ When using `Other` source types, you must fill our the [Source ID](https://docs.
 </div>
 
 **How Asset URL Paths Get Re-Written**
-Once you've configured the plugin, the plugin will automatically rewrite the URLs of your assets to point to the imgix URL.
-For example, if you have an image at `https://mydomain.com/uploads/amsterdam.jpg`, the plugin will rewrite the URL to `https://sdk-test.imgix.net/amsterdam.jpg`. You must configure your imgix source to point into the **resources path** of your web folder, like `/uploads`.
+
+Once you've configured the plugin it automatically rewrites the URLs of your assets to point to the imgix URL. For example, if you have an image at `https://mydomain.com/uploads/amsterdam.jpg`, the plugin will rewrite the URL to `https://sdk-test.imgix.net/amsterdam.jpg`. You must configure your imgix source to point into the **resources path** of your web folder, like `/uploads`.
 
 > [!NOTE]
 > Default configuration for your plugin is fetched from `config/plugins.{js,ts}` or directly from the plugin itself. To customize the default state to revert to, see the [file configuration](#file-configuration) section.
