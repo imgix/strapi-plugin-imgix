@@ -47,5 +47,17 @@ export default ({ strapi }: StrapiContext) => {
         return settingsService.restoreConfig();
       },
     },
+    librarySynchronize: {
+      permissions: [permissions.render(permissions.settings.change)],
+      async apply() {
+        return imgixService.librarySynchronize();
+      },
+    },
+    restoreLibrary: {
+      permissions: [permissions.render(permissions.settings.change)],
+      async apply() {
+        return imgixService.restoreLibrary();
+      },
+    }
   });
 };

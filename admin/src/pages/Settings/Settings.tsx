@@ -6,7 +6,7 @@ import { Stack } from '@strapi/design-system/Stack';
 import { Typography } from '@strapi/design-system/Typography';
 import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 import React, { useCallback } from 'react';
 import { useIntl } from 'react-intl';
@@ -22,7 +22,7 @@ import permissions from '../../permissions';
 import { getMessage } from '../../utils';
 import { AdvanceSection } from './sections/AdvanceSection';
 import { BaseSection } from './sections/BaseSection';
-import { RestoreSection } from './sections/RestoreSection';
+import { AdminSection } from './sections/AdminSection';
 import { HeaderLink } from './styles';
 import { FormData } from './types';
 
@@ -104,12 +104,15 @@ export const Settings = () => {
     return payload;
   }, [data]);
 
-  const onSubmitForm = async (values: FormData) => {
+  const onSubmitForm = async (values: FormData, actions: FormikHelpers<FormData>) => {
     setSubmitInProgress(true);
     const payload = preparePayload(values);
     lockApp();
     try {
       await saveSettings.mutateAsync(payload);
+      actions.resetForm({
+        values,
+      });
     } catch {
 
     } finally { 
@@ -184,7 +187,7 @@ export const Settings = () => {
         validateOnChange={false}
         validateOnBlur={false}
       >
-        {({ handleSubmit, values, errors, handleChange, setValues }) => {
+        {({ handleSubmit, values, errors, dirty, handleChange, setValues }) => {
           return (
             <form noValidate onSubmit={handleSubmit}>
               <HeaderLayout
@@ -241,9 +244,10 @@ export const Settings = () => {
                     </Box>)}
                   <CheckPermissions permissions={permissions.settingsChange}>
                     <Box {...boxDefaultProps}>
-                      <RestoreSection
+                      <AdminSection
                         setValues={setValues}
-                        disabled={asyncActionInProgress} />
+                        disabled={asyncActionInProgress}
+                        dirtyForm={dirty} />
                     </Box>
                   </CheckPermissions>
                 </Stack>

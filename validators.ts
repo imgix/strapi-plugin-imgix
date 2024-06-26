@@ -7,7 +7,16 @@ export const settingsSchema = z.object({
   source: z.object({
     id: z.string({ message: 'page.settings.sections.form.advance.source.id.errors.format' }).optional(),
     type: z.nativeEnum(SOURCE_TYPES),
-    url: z.string({ message: 'page.settings.sections.form.base.source.errors.required' }).url({ message: 'page.settings.sections.form.base.source.errors.format' }),
+    url: z.string({ message: 'page.settings.sections.form.base.source.errors.required' }).url({ message: 'page.settings.sections.form.base.source.url.errors.format' }),
+  }).superRefine((data, ctx) => {
+    if (!data.url.endsWith('/')) {
+      ctx.addIssue({
+        message: 'page.settings.sections.form.base.source.url.errors.trailingSlash',
+        path: ['url'],
+        fatal: true,
+        code: z.ZodIssueCode.custom,
+      });
+    }
   }),
 }).superRefine((data, ctx) => {
   const anyFieldFilled = data.source.id || data.apiKey;
@@ -28,6 +37,15 @@ export const settingsSchema = z.object({
         code: z.ZodIssueCode.custom,
       });
     }
+  }
+
+  if (!data.mediaLibrarySourceUrl.endsWith('/')) {
+    ctx.addIssue({
+      message: 'page.settings.sections.form.base.url.errors.trailingSlash',
+      path: ['mediaLibrarySourceUrl'],
+      fatal: true,
+      code: z.ZodIssueCode.custom,
+    });
   }
 });
 

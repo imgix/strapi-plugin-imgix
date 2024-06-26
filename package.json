@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@strapi/design-system": "^1.18.0",
-    "@strapi/helper-plugin": "^4.24.4",
+    "@strapi/helper-plugin": "^4.25.1",
     "@strapi/icons": "^1.18.0",
     "@tanstack/react-query": "^5.40.0",
     "lodash": "^4.17.21",
@@ -21,9 +21,9 @@
     "zod": "^3.0.0"
   },
   "devDependencies": {
-    "@strapi/strapi": "^4.24.4",
-    "@strapi/types": "^4.24.4",
-    "@strapi/typescript-utils": "^4.24.4",
+    "@strapi/strapi": "^4.25.1",
+    "@strapi/types": "^4.25.1",
+    "@strapi/typescript-utils": "^4.25.1",
     "@types/jest": "^29.5.12",
     "@types/koa": "^2.15.0",
     "@types/koa-bodyparser": "^4.3.12",

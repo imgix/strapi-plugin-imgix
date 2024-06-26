@@ -42,11 +42,8 @@ const ConfirmationDialog = ({
   >
     <DialogBody icon={exclamationMarkCircle}>
       <Stack size={2}>
-        <Flex justifyContent="center">
-          <Typography id="dialog-confirm-description">
-            {children ||
-              getMessage('components.confirmation.dialog.description')}
-          </Typography>
+        <Flex id="dialog-confirm-description" justifyContent="center">
+        {children || (<Typography>{ getMessage('components.confirmation.dialog.description') }</Typography>)}
         </Flex>
       </Stack>
     </DialogBody>
@@ -66,6 +63,7 @@ const ConfirmationDialog = ({
           variant="danger-light"
           startIcon={iconConfirm || check}
           disabled={isActionAsync}
+          loading={isActionAsync}
         >
           {labelConfirm ||
             getMessage(

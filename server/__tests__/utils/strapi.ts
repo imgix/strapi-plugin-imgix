@@ -8,6 +8,7 @@ type StrapiMockConfig = {
   log?: any;
   imgixPlugin?: any;
   uploadPlugin?: any;
+  query?: any;
 };
 
 
@@ -17,9 +18,11 @@ export const getStrapiMock = ({
   log,
   imgixPlugin = imgixMock,
   uploadPlugin = uploadMock,
+  query,
 }: StrapiMockConfig = {}) => ({
   config,
   log,
+  query,
   store: jest.fn().mockImplementation(() => ({
     get: jest.fn(() => Promise.resolve(storeConfig)),
     set: jest.fn(() => Promise.resolve()),

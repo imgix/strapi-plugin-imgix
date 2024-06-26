@@ -4,7 +4,7 @@
 
 A Strapi Plugin to integrate [imgix](www.imgix.com) with your Strapi Media Library.
 
-[![npm version](https://img.shields.io/github/package-json/v/imgix/strapi-plugin-imgix?label=npm&logo=npm)](https://www.npmjs.com/package/@imgix/strapi-plugin-imgix)
+[![npm version](https://img.shields.io/github/package-json/v/imgix/strapi-plugin-imgix?label=npm&logo=npm)](https://www.npmjs.com/package/strapi-plugin-imgix)
 [![Build Status](https://circleci.com/gh/imgix/strapi-plugin-imgix.svg?style=shield)](https://circleci.com/gh/imgix/strapi-plugin-imgix)
 
 <!-- [![Downloads](https://img.shields.io/npm/dm/@imgix/strapi-plugin-imgix.svg)](https://www.npmjs.com/package/@imgix/strapi-plugin-imgix) -->
@@ -62,7 +62,7 @@ In our minimum support we're following [official Node.js releases timelines](htt
 
 **Supported Strapi versions**:
 
-- Strapi v4.24.x (recently tested)
+- Strapi v4.25.x (recently tested)
 - Strapi v4.x
 
 ## Installation
@@ -115,7 +115,7 @@ You can access the configuration page via `Strapi Settings -> Section: IMGIX Plu
 You must specify following properties:
 
 - Source - `Webfolder` or `Other` (S3, Azure, R2, etc)
-- Media Library Source URL - Example: `http://localhost:1337/public/images/`
+- Media Library Source URL - Example: `http://localhost:1337/uploads/`
 - imgix Source URL - Example: `https://sdk-test.imgix.net`
 
 When using `Other` source types, you must fill our the [Source ID](https://docs.imgix.com/apis/management/overview#making-requests) and [API Key](https://dashboard.imgix.com/api-keys) fields. This enables the plugin to [purge](https://docs.imgix.com/apis/management/purges) and [add](https://docs.imgix.com/apis/management/assets#adding-an-asset) assets using the **imgix Management API**.
@@ -123,6 +123,10 @@ When using `Other` source types, you must fill our the [Source ID](https://docs.
 <div style="margin: 20px 0" align="center">
   <img style="width: 100%; height: auto;" src="public/assets/configuration.png" alt="Plugin configuration" />
 </div>
+
+**How Asset URL Paths Get Re-Written**
+
+Once you've configured the plugin it automatically rewrites the URLs of your assets to point to the imgix URL. For example, if you have an image at `https://mydomain.com/uploads/amsterdam.jpg`, the plugin will rewrite the URL to `https://sdk-test.imgix.net/amsterdam.jpg`. You must configure your imgix source to point into the **resources path** of your web folder, like `/uploads`.
 
 > [!NOTE]
 > Default configuration for your plugin is fetched from `config/plugins.{js,ts}` or directly from the plugin itself. To customize the default state to revert to, see the [file configuration](#file-configuration) section.
@@ -201,6 +205,18 @@ module.exports = [
 - `apiKey` - **imgix** Management API Key ([setup](https://dashboard.imgix.com/api-keys))
 - `source.id` - your **imgix** source id as a 24-character string ([setup](https://docs.imgix.com/apis/management/overview#making-requests))
 - `source.url` - you **imgix** source url / subdomain. Example: `https://sdk-test.imgix.net`
+
+## Administration actions
+
+<div style="margin: 20px 0" align="center">
+  <img style="width: 100%; height: auto;" src="public/assets/administration.png" alt="Plugin configuration" />
+</div>
+
+Plugin provides bunch of administration actions you can perform.
+
+- **Restore configuration** - you're forcing plugin to get configuration from the `config/plugins.{js,ts}` or `config/<env>/plugins.{js,ts}` file and overwrite current settings.
+- **Sync Media Library** - Assets existing in Strapi Media Library are forced to work with the plugin. Their paths are overwritten based on current plugin configuration, like *Media Library Source URL* →  *Source URL / Subdomain*.
+- **Desync Media Library** - Assets existing in Strapi Media Library are forced work with your configured provider. Their paths are overwritten back based on current plugin configuration, like *Source URL / Subdomain* →  *Media Library Source URL*.
 
 ## Rendering images
 

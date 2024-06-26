@@ -1,16 +1,25 @@
+import { isEmpty } from 'lodash';
 import { StrapiContext } from '../../@types';
 import { getService } from '../utils';
+
+const FILE_MODEL_UID = 'plugin::upload.file';
 
 type ExtendedFile = File & {
   url?: string;
 }
+
+const createChunks = <T>(arr: T[], size: number) => {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+    arr.slice(i * size, i * size + size),
+  );
+};
 
 export const imgixService = ({ strapi }: StrapiContext) => {
   const BASE_URL = 'https://api.imgix.com/api/v1';
   const settingsService = getService(strapi, 'settings');
 
   async function addFileToService(file: File & { url?: string }) {
-    const { mediaLibrarySourceUrl, source, apiKey } =  await settingsService.getSettings(true);
+    const { mediaLibrarySourceUrl, source, apiKey } = await settingsService.getSettings(true);
 
     // for local development
     const serverHost = strapi.config.get<string>('server.host', 'http://localhost:1337');
@@ -32,6 +41,32 @@ export const imgixService = ({ strapi }: StrapiContext) => {
     }
   }
 
+  const migrateFiles = async (fromUrl: string, targetUrl: string) => {
+    const maxDBPool = Math.ceil(strapi.config.get('database.pool.max', 10) / 2);
+    const fileRepository = strapi.query(FILE_MODEL_UID);
+
+    const data = await fileRepository.findMany({ where: { url: { $startsWith: fromUrl }, mime: { $contains: 'image' }} });
+    const chunks = createChunks(data, maxDBPool);
+
+    for (const chunk of chunks) {
+      await Promise.all(chunk.map(async (file) => {
+        const formats = Object.keys(file.formats || {}).reduce((acc, key) => {
+          acc[key].url = acc[key].url.replace(fromUrl, targetUrl);
+          return acc;
+        }, file.formats);
+
+        await fileRepository.update({
+          where: {
+            id: file.id,
+          },
+          data: {
+            formats: isEmpty(formats) ? null : formats,
+            url: file.url.replace(fromUrl, targetUrl),
+          },
+        });
+      }));
+    }
+  };
 
   const service = {
     getUploadDecorator() {
@@ -43,7 +78,7 @@ export const imgixService = ({ strapi }: StrapiContext) => {
           if (source && apiKey && file.url && file.url.startsWith(source.url)) {
             try {
               return await service.purgeAsset(file.url);
-            }catch (e: any) {
+            } catch (e: any) {
               strapi.log.error(`delete: ${e?.message}`);
             }
           }
@@ -93,6 +128,18 @@ export const imgixService = ({ strapi }: StrapiContext) => {
         return;
       }
       throw new Error('Failed to purge asset');
+    },
+    async librarySynchronize() {
+      const config = await settingsService.getSettings(true);
+      // sync files will be automatically added to the imgix service with the first fetch request
+      await migrateFiles(config.mediaLibrarySourceUrl, config.source.url);
+
+      return Promise.resolve({});
+    },
+    async restoreLibrary() {
+      const config = await settingsService.getSettings(true);
+      await migrateFiles(config.source.url, config.mediaLibrarySourceUrl);
+      return Promise.resolve({});
     },
   };
   return service;
