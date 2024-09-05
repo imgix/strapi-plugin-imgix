@@ -1,11 +1,11 @@
-import { Strapi } from '@strapi/strapi';
+import { Core } from '@strapi/types';
 
-import permissions from '../permissions';
-import { pluginId } from '../pluginId';
+import { permissions } from './permissions';
+import { pluginId } from './utils';
 import { ConfigData } from './validators';
-import { SOURCE_TYPES } from '../constants';
+import { SOURCE_TYPES } from './constants';
 
-async function saveConfig(strapi: Strapi) {
+async function saveConfig(strapi: Core.Strapi) {
   if (strapi.store) {
     const pluginStore = strapi.store({ type: 'plugin', name: pluginId });
     const config = await pluginStore.get({ key: 'config' });
@@ -13,9 +13,9 @@ async function saveConfig(strapi: Strapi) {
     // add config to store if it doesn't exist
     if (!config) {
       const plugin = strapi.plugin(pluginId);
-      const mediaLibrarySourceUrl = plugin.config<string, string>('mediaLibrarySourceUrl', '');
-      const source = plugin.config<ConfigData['source'], ConfigData['source']>('source', { id: '', type: SOURCE_TYPES.FOLDER, url: '' });
-      const apiKey = plugin.config<string, string>('apiKey', '');
+      const mediaLibrarySourceUrl = plugin.config<string>('mediaLibrarySourceUrl', '');
+      const source = plugin.config<ConfigData['source']>('source', { id: '', type: SOURCE_TYPES.FOLDER, url: '' });
+      const apiKey = plugin.config<string>('apiKey', '');
       await pluginStore.set({
         key: 'config',
         value: {
@@ -28,7 +28,7 @@ async function saveConfig(strapi: Strapi) {
   }
 }
 
-async function addPermissions(strapi: Strapi) {
+async function addPermissions(strapi: Core.Strapi) {
   const actions = [
     {
       section: 'plugins',
@@ -46,7 +46,7 @@ async function addPermissions(strapi: Strapi) {
   await strapi.admin?.services.permission.actionProvider.registerMany(actions);
 }
 
-export default async ({ strapi }: { strapi: Strapi }) => {
+export default async ({ strapi }: { strapi: Core.Strapi }) => {
   await saveConfig(strapi);
   await addPermissions(strapi);
 };

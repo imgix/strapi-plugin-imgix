@@ -1,4 +1,4 @@
-import { pluginId } from './pluginId';
+import { pluginId } from './utils';
 
 const settings = {
   read: 'settings.read',
@@ -7,11 +7,10 @@ const settings = {
 type Settings = typeof settings;
 
 const render = (uid: Settings[keyof Settings]) => `plugin::${pluginId}.${uid}`;
-const permissions = {
+export const permissions = {
   render,
   settings,
 } as const;
 
 export type Permissions = typeof permissions;
 
-export default permissions;

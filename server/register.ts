@@ -1,4 +1,4 @@
-import { Strapi } from '@strapi/strapi';
+import { Core } from '@strapi/types';
 
 import { get } from 'lodash';
 
@@ -7,7 +7,7 @@ import { getService } from './utils';
 type ExtendedFile = File & {
   url?: string;
 }
-export default async ({ strapi }: { strapi: Strapi }) => {
+export default async ({ strapi }: { strapi: Core.Strapi }) => {
   const uploadDecorator = getService(strapi, 'imgix').getUploadDecorator();
   const provider = strapi.plugin('upload').provider;
 

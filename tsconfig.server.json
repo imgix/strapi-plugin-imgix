@@ -21,20 +21,19 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
+
   "include": [
-    "custom.d.ts",
-    "./server/**/*",
-    "./admin/**/*",
-    "./strapi-server.*",
-    "./strapi-admin.*",
-    "./setup-package.ts",
-    "./permissions.*", 
-    "constants.ts"
+    "server/**/*",
+    "strapi-server.*",
   ],
   "exclude": [
     "**/node_modules/**/*",
     "**/__tests__/**/*",
     "**/__mocks__/**/*",
-    "**/dist/**/*"
+    "**/dist/**/*",
+    "custom.d.ts",
+    "admin/**/*",
+    "strapi-admin.*",
+    "setup-package.ts",
   ]
 }

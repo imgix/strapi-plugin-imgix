@@ -9,7 +9,7 @@ const config: JestConfigWithTsJest = {
       'ts-jest',
       {//the content you'd placed at "global"
         diagnostics: false,
-        tsconfig: 'tsconfig.json',
+        tsconfig: 'tsconfig.server.json',
       },
     ],
   },

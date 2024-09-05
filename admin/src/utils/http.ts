@@ -1,58 +1,41 @@
-import { kebabCase } from 'lodash';
+import { FetchResponse, useFetchClient } from '@strapi/strapi/admin';
+import { isNil, kebabCase } from 'lodash';
 
-import { pluginId } from '../../../pluginId';
+import { pluginId } from '../utils';
 import { HttpError } from '../errors/HttpError';
 
 type URLString = `/${string}`;
-export const createHttp = (token: string) => {
-  const commonHeaders = new Headers({
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${token}`,
-  });
+export const createHttp = () => {
+  const { get, del, put } = useFetchClient();
   const getURL = (url: string) => `${process.env.STRAPI_ADMIN_BACKEND_URL}/${kebabCase(pluginId)}${url}`;
-  const saveParseJSON = async (response: Response) => {
-    try {
-      return await response.clone().json();
-    } catch {
-      return await response.clone().text();
-    }
-  };
+  const isOk = (response: FetchResponse) => !isNil(response.data);
+  const extractError = (response: FetchResponse) => response.data.error;
   return {
     async delete<Response = unknown>(url: URLString): Promise<Response> {
-      const response = await fetch(getURL(url), {
-        method: 'DELETE',
-        headers: commonHeaders,
-      });
-      if (response.ok) {
-        return saveParseJSON(response);
+      const response = await del(getURL(url));
+      if (isOk(response)) {
+        return response.data;
       }
-      const errorResponse = await saveParseJSON(response);
-      return Promise.reject(new HttpError('Failed to fetch', errorResponse.error.details));
+      const errorResponse = extractError(response);
+      return Promise.reject(new HttpError('Failed to fetch', errorResponse.details));
     },
     async get<Response = unknown>(url: URLString): Promise<Response> {
-      const response = await fetch(getURL(url), {
-        method: 'GET',
-        headers: commonHeaders,
+      const response = await get(getURL(url), {
       });
-      if (response.ok) {
-        return saveParseJSON(response);
+      if (isOk(response)) {
+        return response.data;
       }
-      const errorResponse = await saveParseJSON(response);
-      const error = new HttpError('Failed to fetch', errorResponse.error.details);
+      const errorResponse = extractError(response);
+      const error = new HttpError('Failed to fetch', errorResponse.details);
       return Promise.reject(error);
     },
     async put<Body = unknown, Response = unknown>(url: URLString, body: Body): Promise<Response> {
-      const response = await fetch(getURL(url), {
-        method: 'PUT',
-        headers: commonHeaders,
-        body: JSON.stringify(body),
-      });
-      const responseData = await saveParseJSON(response);
-      if (response.ok) {
-        return responseData;
+      const response = await put(getURL(url), body);
+      if (isOk(response)) {
+        return response.data;
       }
-      const error = new HttpError('Failed to save/update data', responseData.error.details);
+      const errorResponse = extractError(response);
+      const error = new HttpError('Failed to save/update data', errorResponse.details);
       return Promise.reject(error);
     },
   };

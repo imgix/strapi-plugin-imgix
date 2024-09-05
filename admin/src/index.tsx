@@ -1,10 +1,9 @@
-import { prefixPluginTranslations } from '@strapi/helper-plugin';
-
 import pluginPkg from '../../package.json';
-import { pluginId } from '../../pluginId';
+import { pluginId } from './utils';
 import Initializer from './components/Initializer';
 import permissions from './permissions';
 import trads from './translations';
+import prefixPluginTranslations from './utils/prefixTranslations';
 
 function flattenObject(obj: any, prefix = '') {
   return Object.keys(obj).reduce((acc, key) => {

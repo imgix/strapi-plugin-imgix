@@ -1,9 +1,9 @@
 import { isEmpty, pickBy } from 'lodash';
 
 import { StrapiContext } from '../../@types';
-import { pluginId } from '../../pluginId';
+import { pluginId } from '../utils';
 import { ConfigData } from '../validators';
-import { SOURCE_TYPES } from '../../constants';
+import { SOURCE_TYPES } from '../constants';
 
 const settingsService = ({ strapi }: StrapiContext) => {
   return {

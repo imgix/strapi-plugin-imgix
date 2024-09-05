@@ -1,7 +1,7 @@
-import { Strapi } from '@strapi/strapi';
-import { SOURCE_TYPES } from '../../constants';
-import permissions from '../../permissions';
-import { pluginId } from '../../pluginId';
+import { Core } from '@strapi/strapi';
+import { SOURCE_TYPES } from '../constants';
+import { permissions } from '../permissions';
+import { pluginId } from '../utils';
 import bootstrap from '../bootstrap';
 import { imgixMock } from './utils/plugins/imgix';
 import { getStrapiMock } from './utils/strapi';
@@ -14,7 +14,7 @@ describe('Bootstrap', () => {
   describe('saveConfig', () => {
     describe('when config not exist in store', () => {
       const strapiMock = getStrapiMock();
-      beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Strapi }));
+      beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Core.Strapi }));
       it('should save default config in to store', async () => {
         // read from store previous config if available
         expect(strapiMock.store).toHaveBeenCalledTimes(1);
@@ -31,7 +31,7 @@ describe('Bootstrap', () => {
     });
     describe('when config exist in store', () => {
       const strapiMock = getStrapiMock({ storeConfig: {} });
-      beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Strapi }));
+      beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Core.Strapi }));
 
       it('should do not save config', async () => {
         // read from store previous config if available
@@ -50,7 +50,7 @@ describe('Bootstrap', () => {
   describe('addPermissions', () => {
     const strapiMock = getStrapiMock();
 
-    beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Strapi }));
+    beforeEach(() => bootstrap({ strapi: strapiMock as unknown as Core.Strapi }));
 
     it('should add permission plugin', () => {
       expect(strapiMock.admin.services.permission.actionProvider.registerMany).toHaveBeenCalledTimes(1);

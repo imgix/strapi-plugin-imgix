@@ -1,4 +1,4 @@
-import { SourceTypeValue } from "../../../../constants";
+import { SourceTypeValue } from "../../constants";
 
 export type FormData = {
   mediaLibrarySourceUrl: string;

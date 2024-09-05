@@ -1,4 +1,4 @@
-import { Strapi } from '@strapi/strapi';
+import { Core } from '@strapi/strapi';
 import register from '../register';
 import { uploadDecoratorMock } from './utils/plugins/imgix/services';
 import { getStrapiMock } from './utils/strapi';
@@ -10,7 +10,7 @@ describe('Register', () => {
   });
   const strapiMock = getStrapiMock();
 
-  beforeAll(() => register({ strapi: strapiMock as unknown as Strapi }));
+  beforeAll(() => register({ strapi: strapiMock as unknown as Core.Strapi }));
 
   describe('when call upload from provider', () => {
     it('should call upload from decorator', async () => {

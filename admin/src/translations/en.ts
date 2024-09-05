@@ -37,8 +37,8 @@ const en = {
               label: 'Media Library Source URL',
               hint: 'URL of your Strapi Media Library source. For example: {example} etc.',
               errors: {
-                format: 'Please provide a URL in valid format',
-                trailingSlash: 'URL should end with a trailing slash',
+                format: 'Please provide a URL or path in valid format',
+                trailingSlash: 'URL or path should end with a trailing slash',
               },
             },
             source: {

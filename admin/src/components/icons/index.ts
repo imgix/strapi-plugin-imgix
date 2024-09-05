@@ -1,8 +1,8 @@
-import { check, database, exclamationMarkCircle, refresh } from './strapiIcons';
+import { check, database, warningCircle, lightning } from './strapiIcons';
 
 export {
   check,
   database,
-  exclamationMarkCircle,
-  refresh,
+  warningCircle,
+  lightning,
 };

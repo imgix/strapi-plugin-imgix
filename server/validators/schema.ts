@@ -1,8 +1,10 @@
 import { z } from 'zod';
-import { SOURCE_TYPES } from './constants';
+import { SOURCE_TYPES } from '../constants';
 
 export const settingsSchema = z.object({
-  mediaLibrarySourceUrl: z.string().url({ message: 'page.settings.sections.form.base.url.errors.format' }),
+  mediaLibrarySourceUrl: z.string()
+    .startsWith('/', { message: 'page.settings.sections.form.base.url.errors.format' })
+    .or(z.string().url({ message: 'page.settings.sections.form.base.url.errors.format' })),
   apiKey: z.string().optional(),
   source: z.object({
     id: z.string({ message: 'page.settings.sections.form.advance.source.id.errors.format' }).optional(),

@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { StrapiContext } from '../../@types';
+import { StrapiContext, StrapiMedia, ToBeFixed } from '../../@types';
 import { getService } from '../utils';
 
 const FILE_MODEL_UID = 'plugin::upload.file';
@@ -49,8 +49,8 @@ export const imgixService = ({ strapi }: StrapiContext) => {
     const chunks = createChunks(data, maxDBPool);
 
     for (const chunk of chunks) {
-      await Promise.all(chunk.map(async (file) => {
-        const formats = Object.keys(file.formats || {}).reduce((acc, key) => {
+      await Promise.all(chunk.map(async (file: StrapiMedia) => {
+        const formats = Object.keys(file.formats || {}).reduce((acc: ToBeFixed, key) => {
           acc[key].url = acc[key].url.replace(fromUrl, targetUrl);
           return acc;
         }, file.formats);

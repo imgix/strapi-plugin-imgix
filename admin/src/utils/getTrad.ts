@@ -1,4 +1,4 @@
-import { pluginId } from '../../../pluginId';
+import { pluginId } from '../utils';
 
 const getTrad = (id: string) => `${pluginId}.${id}`;
 
