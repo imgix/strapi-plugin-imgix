@@ -12,19 +12,18 @@
     "url": "https://github.com/imgix/strapi-plugin-imgix"
   },
   "dependencies": {
-    "@strapi/helper-plugin": "5.0.0-alpha.2",
-    "@strapi/design-system": "2.0.0-rc.10",
-    "@strapi/icons": "2.0.0-rc.10",
-    "@strapi/utils": "5.0.0-rc.14",
+    "@strapi/design-system": "2.0.0-rc.11",
+    "@strapi/icons": "2.0.0-rc.11",
+    "@strapi/utils": "5.0.0-rc.23",
     "@tanstack/react-query": "^5.40.0",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "zod": "^3.0.0"
   },
   "devDependencies": {
-    "@strapi/strapi": "^5.0.0-rc.14",
-    "@strapi/types": "^5.0.0-rc.14",
-    "@strapi/typescript-utils": "^5.0.0-rc.14",
+    "@strapi/strapi": "^5.0.0-rc.23",
+    "@strapi/types": "^5.0.0-rc.23",
+    "@strapi/typescript-utils": "^5.0.0-rc.23",
     "@types/jest": "^29.5.12",
     "@types/koa": "^2.15.0",
     "@types/koa-bodyparser": "^4.3.12",
@@ -47,7 +46,9 @@
     "typescript": "5.3.2"
   },
   "peerDependencies": {
-    "@strapi/strapi": "^5.0.0",
+    "@strapi/strapi": "^5.0.0-rc.23",
+    "@strapi/design-system": "^2.0.0-rc.11",
+    "@strapi/icons": "^2.0.0-rc.11",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.0.0",
@@ -77,7 +78,8 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "publish:latest": "cd dist && npm publish --tag beta",
+    "publish:latest": "cd dist && npm publish --tag latest",
+    "publish:beta": "cd dist && npm publish --tag beta",
     "prepublish:latest": "npm run clean && npm run build && ts-node ./setup-package.ts",
     "build": "yarn clean && yarn build:part:admin && yarn build:part:server",
     "build:part:admin": "tsc -p tsconfig.admin.json ",

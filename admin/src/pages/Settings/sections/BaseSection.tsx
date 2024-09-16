@@ -9,7 +9,8 @@ import {
   Grid,
   SingleSelect,
   SingleSelectOption,
-  Typography
+  Typography,
+  Link
 } from '@strapi/design-system';
 
 import Field from '../../../components/Field';
@@ -42,11 +43,13 @@ export const BaseSection = ({ handleChange, mediaLibrarySourceUrl, mediaLibraryS
         <Grid.Item col={4} xs={12} alignItems="flex-start">
           <Field
             label={getMessage('page.settings.sections.form.base.source.type.label')}
-            hint={<HintLink
-              href="https://docs.imgix.com/getting-started/setup/creating-sources"
-              target="_blank"
-              isExternal>
-              {getMessage('page.settings.sections.form.base.source.type.hint')}
+            hint={<HintLink>
+              <Link
+                href="https://docs.imgix.com/getting-started/setup/creating-sources"
+                target="_blank"
+                isExternal>
+                {getMessage('page.settings.sections.form.base.source.type.hint')}
+              </Link>
             </HintLink>}>
             <SingleSelect
               name="sourceType"

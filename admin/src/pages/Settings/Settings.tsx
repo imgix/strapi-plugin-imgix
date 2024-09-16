@@ -11,7 +11,7 @@ import {
   useRBAC
 } from '@strapi/strapi/admin';
 
-import { Box, Button, Flex, Typography } from '@strapi/design-system';
+import { Box, Button, Flex, Link, Typography } from '@strapi/design-system';
 
 import { check } from '../../components/icons';
 import { AdvanceSection } from './sections/AdvanceSection';
@@ -215,11 +215,13 @@ export const Settings = () => {
                   {formatMessage({
                     id: `${camelCase(pluginId)}.page.settings.header.description`,
                   }, {
-                    link: <HeaderLink
-                      href="https://docs.imgix.com/libraries#plugins"
-                      target="_blank"
-                      isExternal>
-                      {getMessage('page.settings.header.link')}
+                    link: <HeaderLink>
+                      <Link
+                        href="https://docs.imgix.com/libraries#plugins"
+                        target="_blank"
+                        isExternal>
+                        {getMessage('page.settings.header.link')}
+                      </Link>
                     </HeaderLink>,
                   })}
                 </Typography>}

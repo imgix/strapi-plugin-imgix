@@ -16,11 +16,11 @@ export type StrapiMedia = {
     previewUrl: string;
     provider: string;
     provider_metadata: any;
-    formats: {
-        small?: StrapiMedia;
-        medium?: StrapiMedia;
-        large?: StrapiMedia;
-    },
+    formats: StrapiMediaFormats;
 };
 
-export type ToBeFixed = any;
+export type StrapiMediaFormats = {
+    [key in StrapiMediaFormatKey]: StrapiMedia;
+};
+
+export type StrapiMediaFormatKey = 'small' | 'medium' | 'large';
