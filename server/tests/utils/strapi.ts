@@ -11,6 +11,8 @@ type StrapiMockConfig = {
   query?: any;
 };
 
+type StrapiMock = Core.Strapi & { store: jest.Mock };
+
 
 export const getStrapiMock = ({
   storeConfig,
@@ -47,4 +49,4 @@ export const getStrapiMock = ({
       },
     },
   },
-}) as unknown as Core.Strapi;
+}) as unknown as StrapiMock;
