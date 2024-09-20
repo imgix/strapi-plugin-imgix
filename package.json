@@ -103,6 +103,7 @@
     "publish:latest": "npm publish --tag latest",
     "publish:beta": "npm publish --tag beta",
     "build": "yarn clean && strapi-plugin build",
+    "build:dev": "yarn build && ts-node ./scripts/setup-dev-package.ts",
     "clean": "rm -rf dist",
     "develop": "nodemon --exec \"yarn build:dev\"",
     "lint": "prettier --check .",

@@ -12,14 +12,11 @@ const queryClient = new QueryClient({
   },
 });
 
-const SettingsPage =() => {
-  console.log('init');
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ProtectedSettingsPage />
-    </QueryClientProvider>
-  );
-};
+const SettingsPage = () => (
+  <QueryClientProvider client={queryClient}>
+    <ProtectedSettingsPage />
+  </QueryClientProvider>
+);
 SettingsPage.displayName = 'SettingsPage';
 
 export { SettingsPage };

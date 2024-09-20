@@ -18,41 +18,32 @@ function flattenObject(obj: any, prefix = '') {
 
 export default {
   register(app: any) {
-    const plugin = {
+    app.createSettingSection({
+      id: pluginId,
+      intlLabel: {
+        id: `${pluginId}.plugin.section`,
+        defaultMessage: `IMGX plugin`,
+      },
+    }, []);
+
+    app.registerPlugin({
       id: pluginId,
       initializer: Initializer,
       isReady: false,
       name: pluginId,
-    };
-    app.createSettingSection(
-      {
-        id: pluginId,
-        intlLabel: {
-          id: `${pluginId}.plugin.section`,
-          defaultMessage: `IMGX plugin`,
-        },
+    });
+  },
+  bootstrap(app: any) {
+    app.addSettingsLink(pluginId, {
+      intlLabel: {
+        id: `${pluginId}.plugin.section.item`,
+        defaultMessage: 'Configuration',
       },
-      [
-        {
-          intlLabel: {
-            id: `${pluginId}.plugin.section.item`,
-            defaultMessage: 'Configuration',
-          },
-          id: `${pluginId}.configuration`,
-          to: `/settings/${pluginId}`,
-          Component: async () => {
-            const component = await import(
-              /* webpackChunkName: "imgx-settings" */ './pages/Settings'
-              ).then((mod) => ({ default: mod.SettingsPage }))
-              
-            return component;
-          },
-          permissions: permissions.settings,
-        },
-      ],
-    );
-
-    app.registerPlugin(plugin);
+      id: `${pluginId}.configuration`,
+      to: `/settings/${pluginId}`,
+      Component: () => import('./pages/Settings').then((mod) => ({ default: mod.SettingsPage })),
+      permissions: permissions.settings,
+    });
   },
   registerTrads: async function ({ locales = [] }: { locales: string[] }) {
     return Promise.all(
