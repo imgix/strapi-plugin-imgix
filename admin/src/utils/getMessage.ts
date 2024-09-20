@@ -1,6 +1,6 @@
 import { camelCase } from 'lodash';
 import { useIntl } from 'react-intl';
-import { pluginId } from '../../../pluginId';
+import { pluginId } from '../utils';
 import { TranslationPath } from '../translations';
 
 export type MessageInput = TranslationPath | MessageInputObject;

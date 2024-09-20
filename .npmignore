@@ -1,10 +1,11 @@
 public/
 coverage/
+scripts/
 .circleci/
 .github/
 .nvmrc
 .eslintrc
-dist/tsconfig.tsbuildinfo
+.eslintignore
 codecov.yml
 *.map
 *.spec.*

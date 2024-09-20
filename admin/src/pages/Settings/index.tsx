@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { Settings } from './Settings';
+import { Settings as Page } from './Settings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,10 +12,11 @@ const queryClient = new QueryClient({
   },
 });
 
-export const SettingsPage = memo(() => (
+const SettingsPage = () => (
   <QueryClientProvider client={queryClient}>
-    <Settings />
+    <Page />
   </QueryClientProvider>
-));
+);
 SettingsPage.displayName = 'SettingsPage';
-export default SettingsPage;
+
+export { SettingsPage };

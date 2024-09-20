@@ -6,7 +6,7 @@ jobs:
     environment:
       # CODECOV_TOKEN: xxx
     docker:
-      - image: cimg/node:18.18.2
+      - image: cimg/node:20.12.2
     working_directory: ~/repo
     resource_class: large
     steps:

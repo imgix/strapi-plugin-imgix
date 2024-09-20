@@ -1,48 +1,52 @@
 import React, { useCallback, useState } from 'react';
-
+import { useIntl } from 'react-intl';
 import { useMutation } from '@tanstack/react-query';
 import { FormikHelpers } from 'formik';
 import { camelCase } from 'lodash';
 
-import { Button } from '@strapi/design-system/Button';
-import { Divider } from '@strapi/design-system/Divider';
-import { Flex } from '@strapi/design-system/Flex';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Stack } from '@strapi/design-system/Stack';
-import { Typography } from '@strapi/design-system/Typography';
-import { useNotification } from '@strapi/helper-plugin';
+import { useNotification } from '@strapi/admin/strapi-admin';
 
-import { pluginId } from '../../../../../pluginId';
-import { ConfigData } from '../../../../../server/validators';
+import {
+  Button,
+  Divider,
+  Flex,
+  Grid,
+  Typography
+} from '@strapi/design-system';
+
+import { ConfigData } from '../../../validators';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
-import { database, refresh } from '../../../components/icons';
+import { database, lightning } from '../../../components/icons';
 import { useHTTP } from '../../../hooks';
-import { getMessage } from '../../../utils';
+import { getMessage, pluginId } from '../../../utils';
 import { FormData } from '../types';
 
 type AdminSectionProps = {
   setValues: FormikHelpers<FormData>['setValues'];
   disabled?: boolean;
   dirtyForm?: boolean;
-}
-
+};
 
 export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionProps) => {
+  const { formatMessage } = useIntl();
   const [isRestoreVisible, setIsRestoreVisible] = useState(false);
   const [isForceSyncVisible, setIsForceSyncVisible] = useState(false);
   const [isForceDesyncVisible, setIsForceDesyncVisible] = useState(false);
   const http = useHTTP();
-  const toggleNotification = useNotification();
+  const { toggleNotification } = useNotification();
 
-  const handleRestoreConfirmation = useCallback(() => {
+  const handleRestoreConfirmation = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     setIsRestoreVisible(true);
   }, []);
 
-  const handleForceSyncConfirmation = useCallback(() => {
+  const handleForceSyncConfirmation = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     setIsForceSyncVisible(true);
   }, []);
 
-  const handleForceDesyncConfirmation = useCallback(() => {
+  const handleForceDesyncConfirmation = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     setIsForceDesyncVisible(true);
   }, []);
 
@@ -53,9 +57,9 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
     onSuccess: (values: ConfigData) => {
       toggleNotification({
         type: 'success',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.admin.restore.success`,
-        },
+        }),
       });
       setValues({
         mediaLibrarySourceUrl: values.mediaLibrarySourceUrl,
@@ -68,9 +72,9 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
     onError: () => {
       toggleNotification({
         type: 'warning',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.admin.restore.error`,
-        },
+        }),
       });
     },
   });
@@ -82,17 +86,17 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
     onSuccess: () => {
       toggleNotification({
         type: 'success',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.admin.sync.success`,
-        },
+        }),
       });
     },
     onError: () => {
       toggleNotification({
         type: 'warning',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.admin.sync.error`,
-        },
+        }),
       });
     },
   });
@@ -104,17 +108,17 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
     onSuccess: () => {
       toggleNotification({
         type: 'success',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.admin.desync.success`,
-        },
+        }),
       });
     },
     onError: () => {
       toggleNotification({
         type: 'warning',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.admin.desync.error`,
-        },
+        }),
       });
     },
   });
@@ -153,26 +157,28 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
   }, []);
 
   return (
-    <Stack size={4}>
-      <Stack size={2}>
-        <Typography variant="delta" as="h2">
+    <Flex width="100%" direction="column" alignItems="flex-start" gap={4}>
+      <Flex width="100%" direction="column" alignItems="flex-start" gap={2}>
+        <Typography variant="delta" tag="h2">
           {getMessage('page.settings.sections.admin.title')}
         </Typography>
-      </Stack>
-      <Grid gap={4}>
-        <GridItem col={8}>
-          <Typography variant="epsilon" as="h3">
-            {getMessage('page.settings.sections.admin.restore.title')}
-          </Typography>
-          <Typography variant="pi" as="h4">
-            {getMessage('page.settings.sections.admin.restore.subtitle')}
-          </Typography>
-        </GridItem>
-        <GridItem col={4}>
+      </Flex>
+      <Grid.Root width="100%" gap={4}>
+        <Grid.Item col={8}>
+          <Flex width="100%" direction="column" alignItems="flex-start" gap={1}>
+            <Typography variant="epsilon" tag="h3">
+              {getMessage('page.settings.sections.admin.restore.title')}
+            </Typography>
+            <Typography variant="pi" tag="h4">
+              {getMessage('page.settings.sections.admin.restore.subtitle')}
+            </Typography>
+          </Flex>
+        </Grid.Item>
+        <Grid.Item col={4}>
           <Flex width="100%" height="100%" direction="row" alignItems="center" justifyContent="flex-end">
             <Button
               variant="danger-light"
-              startIcon={refresh}
+              startIcon={lightning}
               onClick={handleRestoreConfirmation}
               disabled={disabled}
             >
@@ -189,7 +195,7 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
             labelConfirm={getMessage(
               'page.settings.sections.admin.restore.confirmation.button.confirm',
             )}
-            iconConfirm={refresh}
+            iconConfirm={lightning}
             onConfirm={onConfirmRestore}
             onCancel={onCancelRestore}
           >
@@ -199,19 +205,21 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
               )}
             </Typography>
           </ConfirmationDialog>
-        </GridItem>
-        <GridItem col={12}>
-          <Divider />
-        </GridItem>
-        <GridItem col={8}>
-          <Typography variant="epsilon" as="h3">
-            {getMessage('page.settings.sections.admin.sync.title')}
-          </Typography>
-          <Typography variant="pi" as="h4">
-            {getMessage('page.settings.sections.admin.sync.subtitle')}
-          </Typography>
-        </GridItem>
-        <GridItem col={4}>
+        </Grid.Item>
+        <Grid.Item col={12}>
+          <Divider width="100%" />
+        </Grid.Item>
+        <Grid.Item col={8}>
+          <Flex width="100%" direction="column" alignItems="flex-start" gap={1}>
+            <Typography variant="epsilon" tag="h3">
+              {getMessage('page.settings.sections.admin.sync.title')}
+            </Typography>
+            <Typography variant="pi" tag="h4">
+              {getMessage('page.settings.sections.admin.sync.subtitle')}
+            </Typography>
+          </Flex>
+        </Grid.Item>
+        <Grid.Item col={4}>
           <Flex width="100%" height="100%" direction="row" alignItems="center" justifyContent="flex-end">
             <Button
               variant="danger-light"
@@ -236,33 +244,35 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
             onConfirm={onConfirmForceSync}
             onCancel={onCancelForceSync}
           >
-            <Stack gap={4}>
+            <Flex width="100%" direction="column" gap={4}>
               <Typography>
                 {getMessage(
                   'page.settings.sections.admin.sync.confirmation.description',
                 )}
               </Typography>
-              <Divider />
-              <Typography variant="pi">
+              <Divider width="100%" />
+              <Typography textColor="warning500" textAlign="center" fontWeight="bold" variant="pi">
                 {getMessage(
                   'page.settings.sections.admin.sync.confirmation.alert',
                 )}
               </Typography>
-            </Stack>
+            </Flex>
           </ConfirmationDialog>
-        </GridItem>
-        <GridItem col={12}>
-          <Divider />
-        </GridItem>
-        <GridItem col={8}>
-          <Typography variant="epsilon" as="h3">
-            {getMessage('page.settings.sections.admin.desync.title')}
-          </Typography>
-          <Typography variant="pi" as="h4">
-            {getMessage('page.settings.sections.admin.desync.subtitle')}
-          </Typography>
-        </GridItem>
-        <GridItem col={4}>
+        </Grid.Item>
+        <Grid.Item col={12}>
+          <Divider width="100%" />
+        </Grid.Item>
+        <Grid.Item col={8}>
+          <Flex width="100%" direction="column" alignItems="flex-start" gap={1}>
+            <Typography variant="epsilon" tag="h3">
+              {getMessage('page.settings.sections.admin.desync.title')}
+            </Typography>
+            <Typography variant="pi" tag="h4">
+              {getMessage('page.settings.sections.admin.desync.subtitle')}
+            </Typography>
+          </Flex>
+        </Grid.Item>
+        <Grid.Item col={4}>
           <Flex width="100%" height="100%" direction="row" alignItems="center" justifyContent="flex-end">
             <Button
               variant="danger-light"
@@ -287,23 +297,23 @@ export const AdminSection = ({ setValues, disabled, dirtyForm }: AdminSectionPro
             onConfirm={onConfirmForceDesync}
             onCancel={onCancelForceDesync}
           >
-            <Stack gap={4}>
+            <Flex width="100%" direction="column" gap={4}>
               <Typography>
                 {getMessage(
                   'page.settings.sections.admin.desync.confirmation.description',
                 )}
               </Typography>
-              <Divider />
-              <Typography variant="pi">
+              <Divider width="100%" />
+              <Typography textColor="warning500" textAlign="center" fontWeight="bold" variant="pi">
                 {getMessage(
                   'page.settings.sections.admin.desync.confirmation.alert',
                 )}
               </Typography>
-            </Stack>
+            </Flex>
           </ConfirmationDialog>
-        </GridItem>
-      </Grid>
-    </Stack>
+        </Grid.Item>
+      </Grid.Root>
+    </Flex>
 
   );
 };

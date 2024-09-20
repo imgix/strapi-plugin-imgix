@@ -23,20 +23,25 @@ A Strapi Plugin to integrate [imgix](www.imgix.com) with your Strapi Media Libra
 
 ### Table of Contents
 
-1. [Features](#features)
-2. [Requirements](#requirements)
-3. [Installation](#installation)
-4. [Configuration](#configuration)
+1. [Versions](#versions)
+2. [Features](#features)
+3. [Requirements](#requirements)
+4. [Installation](#installation)
+5. [Configuration](#configuration)
    - [imgix configuration](#imgix-configuration)
    - [Settings page configuration](#settings-page-configuration)
    - [File configuration file](#file-configuration)
    - [Security Middleware Configuration](#security-middleware-configuration)
-5. [Rendering images](#rendering-images)
-6. [Contributing](#contributing)
+6. [Rendering images](#rendering-images)
+7. [Contributing](#contributing)
 
 <!-- tocstop -->
 
 <!-- prettier-ignore-end -->
+
+## Versions
+- **Strapi v5** - (current) [v2.x](https://github.com/imgix/strapi-plugin-imgix)
+- **Strapi v4** - [v1.x](https://github.com/imgix/strapi-plugin-imgix/tree/v4)
 
 ## Features
 
@@ -62,8 +67,8 @@ In our minimum support we're following [official Node.js releases timelines](htt
 
 **Supported Strapi versions**:
 
-- Strapi v4.25.x (recently tested)
-- Strapi v4.x
+- Strapi v5.0.0 (recently tested)
+- Strapi v5.x
 
 ## Installation
 

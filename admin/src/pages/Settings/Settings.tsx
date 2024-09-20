@@ -1,41 +1,69 @@
-import { Box } from '@strapi/design-system/Box';
-import { Button } from '@strapi/design-system/Button';
-import { ContentLayout, HeaderLayout } from '@strapi/design-system/Layout';
-import { Main } from '@strapi/design-system/Main';
-import { Stack } from '@strapi/design-system/Stack';
-import { Typography } from '@strapi/design-system/Typography';
-import { CheckPermissions, LoadingIndicatorPage, useFocusWhenNavigate, useNotification, useOverlayBlocker } from '@strapi/helper-plugin';
+import React, { useCallback, useState } from 'react';
+import { useIntl } from 'react-intl';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik, FormikHelpers } from 'formik';
+// import { camelCase, get, isArray, isEmpty, isNil, merge, pickBy } from 'lodash';
 import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
-import React, { useCallback } from 'react';
-import { useIntl } from 'react-intl';
-import { SOURCE_TYPES } from '../../../../constants';
 
-import { pluginId } from '../../../../pluginId';
-import { ConfigData } from '../../../../server/validators';
-import { settingsSchema } from '../../../../validators';
+import {
+  Page,
+  Layouts,
+  useNotification,
+  // useRBAC
+} from '@strapi/admin/strapi-admin';
+
+import { Box, Button, Flex, Link, Typography } from '@strapi/design-system';
+
 import { check } from '../../components/icons';
-import { Details, HttpError } from '../../errors/HttpError';
-import { useHTTP } from '../../hooks';
-import permissions from '../../permissions';
-import { getMessage } from '../../utils';
 import { AdvanceSection } from './sections/AdvanceSection';
 import { BaseSection } from './sections/BaseSection';
 import { AdminSection } from './sections/AdminSection';
+
+import { useHTTP } from '../../hooks';
+import pluginPermissions from '../../permissions';
+import { getMessage, pluginId } from '../../utils';
+import { Details, HttpError } from '../../errors/HttpError';
+
+import { ConfigData, settingsSchema } from '../../validators';
+
+import { SOURCE_TYPES } from '../../constants';
+
 import { HeaderLink } from './styles';
+
 import { FormData } from './types';
 
-export const Settings = () => {
-  useFocusWhenNavigate();
-  const http = useHTTP();
-  const toggleNotification = useNotification();
-  const { lockApp, unlockApp } = useOverlayBlocker();
-  const { formatMessage } = useIntl();
-  const queryClient = useQueryClient();
+// const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
+//   const item = get(pluginPermissions, key);
+//   if (isArray(item)) {
+//     return [...acc, ...item];
+//   }
+//   return [...acc, item];
+// }, []);
 
-  const [apiKeyValidation, setApiKeyValidation] = React.useState(false);
-  const [submitInProgress, setSubmitInProgress] = React.useState(false);
+const ProtectedSettingsPage = () => (
+  <Page.Protect permissions={pluginPermissions.settings}>
+    <Settings />
+  </Page.Protect>
+);
+
+const Settings = () => {
+  const { formatMessage } = useIntl();
+  const { toggleNotification } = useNotification();
+  // const { lockApp, unlockApp } = useOverlayBlocker(); // TODO
+  const queryClient = useQueryClient();
+  const http = useHTTP();
+
+  const [apiKeyValidation, setApiKeyValidation] = useState(false);
+  const [submitInProgress, setSubmitInProgress] = useState(false);
+
+  // const {
+  //   isLoading: isLoadingForPermissions,
+  //   allowedActions: { canChange },
+  // } = useRBAC(flattenPermissions);
+
+  // TODO: Remove after completed investigation performed by Strapi for `useRBAC` and `Protected` issue with AuthProvider in plugins
+  const canChange = true;
+  const isLoadingForPermissions = false;
 
   const { data, isLoading } = useQuery({
     queryKey: [camelCase(pluginId), 'get-settings'],
@@ -56,22 +84,19 @@ export const Settings = () => {
       queryClient.invalidateQueries({ queryKey: [camelCase(pluginId), 'get-settings'] });
       toggleNotification({
         type: 'success',
-        message: {
+        message: formatMessage({
           id: `${camelCase(pluginId)}.page.settings.notification.save.success`,
-        },
+        }),
       });
-      unlockApp();
     },
     onError: (error: HttpError<Details[]>) => {
-      unlockApp();
       if (error instanceof HttpError) {
         const details = error.response?.map((e: { message: string }) => e.message).join('\n');
         toggleNotification({
           type: 'warning',
-          message: {
+          message: formatMessage({
             id: `${camelCase(pluginId)}.page.settings.notification.save.error`,
-            values: { details, br: <br /> },
-          },
+          }, { details }),
         });
       }
     },
@@ -107,7 +132,6 @@ export const Settings = () => {
   const onSubmitForm = async (values: FormData, actions: FormikHelpers<FormData>) => {
     setSubmitInProgress(true);
     const payload = preparePayload(values);
-    lockApp();
     try {
       await saveSettings.mutateAsync(payload);
       actions.resetForm({
@@ -115,13 +139,13 @@ export const Settings = () => {
       });
     } catch {
 
-    } finally { 
-      unlockApp();
+    } finally {
       setSubmitInProgress(false);
     }
   };
 
   const boxDefaultProps = {
+    width: '100%',
     background: 'neutral0',
     hasRadius: true,
     shadow: 'filterShadow',
@@ -168,18 +192,20 @@ export const Settings = () => {
     }
     return errors;
   };
-  if (isLoading) {
+
+  if (isLoading || isLoadingForPermissions) {
     return (
-      <LoadingIndicatorPage>
+      <Page.Loading>
         {getMessage('page.settings.state.loading')}
-      </LoadingIndicatorPage>
+      </Page.Loading>
     );
   }
 
   const asyncActionInProgress = apiKeyValidation || submitInProgress;
 
   return (
-    <Main>
+    <Page.Main>
+      <Page.Title>{getMessage("page.settings.header.title")}</Page.Title>
       <Formik<FormData>
         onSubmit={onSubmitForm}
         initialValues={merge(initialValues, data)}
@@ -190,35 +216,35 @@ export const Settings = () => {
         {({ handleSubmit, values, errors, dirty, handleChange, setValues }) => {
           return (
             <form noValidate onSubmit={handleSubmit}>
-              <HeaderLayout
+              <Layouts.Header
                 title={getMessage('page.settings.header.title')}
-                subtitle={<Typography variant="epsilon" textColor="neutral400">
+                subtitle={<Typography variant="epsilon" textColor="neutral600">
                   {formatMessage({
                     id: `${camelCase(pluginId)}.page.settings.header.description`,
                   }, {
-                    link: <HeaderLink
-                      href="https://docs.imgix.com/libraries#plugins"
-                      target="_blank"
-                      isExternal>
-                      {getMessage('page.settings.header.link')}
+                    link: <HeaderLink>
+                      <Link
+                        href="https://docs.imgix.com/libraries#plugins"
+                        target="_blank"
+                        isExternal>
+                        {getMessage('page.settings.header.link')}
+                      </Link>
                     </HeaderLink>,
                   })}
                 </Typography>}
                 primaryAction={
-                  <CheckPermissions permissions={permissions.settingsChange}>
-                    <Button
-                      type="submit"
-                      startIcon={check}
-                      disabled={asyncActionInProgress}
-                      loading={asyncActionInProgress}
-                    >
-                      {getMessage('page.settings.actions.save')}
-                    </Button>
-                  </CheckPermissions>
+                  canChange && (<Button
+                    type="submit"
+                    startIcon={check}
+                    disabled={asyncActionInProgress}
+                    loading={asyncActionInProgress}
+                  >
+                    {getMessage('page.settings.actions.save')}
+                  </Button>)
                 }
               />
-              <ContentLayout>
-                <Stack size={4}>
+              <Layouts.Content>
+                <Flex width="100%" direction="column" gap={6}>
                   <Box {...boxDefaultProps}>
                     <BaseSection
                       handleChange={handleChange}
@@ -242,20 +268,20 @@ export const Settings = () => {
                         disabled={asyncActionInProgress}
                       />
                     </Box>)}
-                  <CheckPermissions permissions={permissions.settingsChange}>
-                    <Box {...boxDefaultProps}>
-                      <AdminSection
-                        setValues={setValues}
-                        disabled={asyncActionInProgress}
-                        dirtyForm={dirty} />
-                    </Box>
-                  </CheckPermissions>
-                </Stack>
-              </ContentLayout>
+                  {canChange && (<Box {...boxDefaultProps}>
+                    <AdminSection
+                      setValues={setValues}
+                      disabled={asyncActionInProgress}
+                      dirtyForm={dirty} />
+                  </Box>)}
+                </Flex>
+              </Layouts.Content>
             </form>
           );
         }}
       </Formik>
-    </Main>
+    </Page.Main>
   );
 };
+
+export { ProtectedSettingsPage, Settings };

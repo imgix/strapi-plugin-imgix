@@ -1,8 +1,8 @@
-import { Check, Database, ExclamationMarkCircle, Refresh } from '@strapi/icons';
+import { Check, Database, WarningCircle, Lightning } from '@strapi/icons';
 import React from 'react';
 
 export const check = <Check />;
 export const database = <Database />;
-export const exclamationMarkCircle = <ExclamationMarkCircle />;
-export const refresh = <Refresh />;
+export const warningCircle = <WarningCircle />;
+export const lightning = <Lightning />;
 

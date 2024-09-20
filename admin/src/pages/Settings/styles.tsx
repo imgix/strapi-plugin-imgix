@@ -1,22 +1,26 @@
 import styled from 'styled-components';
 
-import { Link } from '@strapi/design-system/v2';
+export const HeaderLink = styled.span`
+    a {
+        gap: 6px;
 
-export const HeaderLink = styled(Link)`
-    span {
-        font-size: 1rem;
+        span {
+            font-size: 1.6rem;
+        }
     }
 `;
 
-export const HintLink = styled(Link)`
-    gap: 4px;
+export const HintLink = styled.span`
+    a {
+        gap: 4px;
     
-    span {
-        font-size: .75rem;
-    }
+        span {
+            font-size: 1.33rem;
+        }
 
-    svg {
-        width: .75rem;
-        height: .75rem;
+        svg {
+            width: 1.33rem;
+            height: 1.33rem;
+        }
     }
 `;
