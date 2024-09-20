@@ -19,8 +19,6 @@ export type StrapiMedia = {
     formats: StrapiMediaFormats;
 };
 
-export type StrapiMediaFormats = {
-    [key in StrapiMediaFormatKey]: StrapiMedia;
-};
+export type StrapiMediaFormats =  Record<StrapiMediaFormatKey, StrapiMedia>;
 
 export type StrapiMediaFormatKey = 'small' | 'medium' | 'large';
