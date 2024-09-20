@@ -1,5 +1,6 @@
 public/
 coverage/
+scripts/
 .circleci/
 .github/
 .nvmrc

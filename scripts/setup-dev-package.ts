@@ -7,22 +7,22 @@
  *
  **/
 
-const fs = require("fs");
-const lodash = require("lodash");
+import fs from 'fs';
+import lodash from 'lodash';
 
 // This script is called from within the build folder. It is important to include it in .npmignore, so it will not get published.
-const sourceDirectory = __dirname;
-const destinationDirectory = "./dist/" + __dirname;
+const sourceDirectory = __dirname + '/../';
+const destinationDirectory = sourceDirectory + './dist';
 
 function main() {
   // Generate publish-ready package.json
   const source = fs
-    .readFileSync(__dirname + "/package.json")
+    .readFileSync(sourceDirectory + "/package.json")
     .toString("utf-8");
   const sourceObj = JSON.parse(source);
   sourceObj.scripts = {};
   sourceObj.devDependencies = {};
-  sourceObj.files = ["./"];
+  sourceObj.files = undefined;
   sourceObj.exports = Object.keys(sourceObj.exports).reduce((acc: any, key: string) => {
     if (lodash.isString(sourceObj.exports[key])) {
       acc[key] = sourceObj.exports[key].replace("dist/", "");
@@ -40,22 +40,9 @@ function main() {
     }
     return acc;
   }, {});
-  console.log(sourceObj);
   fs.writeFileSync(
     `${destinationDirectory}/package.json`,
     Buffer.from(JSON.stringify(sourceObj, null, 2), "utf-8")
-  );
-  fs.copyFileSync(
-    `${sourceDirectory}/README.md`,
-    `${destinationDirectory}/README.md`
-  );
-  fs.copyFileSync(
-    `${sourceDirectory}/LICENSE`,
-    `${destinationDirectory}/.npmignore`
-  );
-  fs.copyFileSync(
-    `${sourceDirectory}/.npmignore`,
-    `${destinationDirectory}/.npmignore`
   );
 }
 
