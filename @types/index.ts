@@ -15,7 +15,7 @@ export type StrapiMedia = {
     size: number;
     previewUrl: string;
     provider: string;
-    provider_metadata: any;
+    provider_metadata: unknown;
     formats: StrapiMediaFormats;
 };
 
