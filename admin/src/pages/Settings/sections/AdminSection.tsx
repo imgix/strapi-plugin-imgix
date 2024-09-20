@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { FormikHelpers } from 'formik';
 import { camelCase } from 'lodash';
 
-import { useNotification } from '@strapi/strapi/admin';
+import { useNotification } from '@strapi/admin/strapi-admin';
 
 import {
   Button,

@@ -1,4 +1,4 @@
-import { FetchResponse, useFetchClient } from '@strapi/strapi/admin';
+import { FetchResponse, useFetchClient } from '@strapi/admin/strapi-admin';
 import { isNil, kebabCase } from 'lodash';
 
 import { pluginId } from '../utils';

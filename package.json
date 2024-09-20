@@ -116,28 +116,6 @@
     "watch": "strapi-plugin watch",
     "watch:link": "strapi-plugin watch:link"
   },
-  "scripts_legacy": {
-    "prepare": "husky install",
-    "publish:latest": "cd dist && npm publish --tag latest",
-    "publish:beta": "cd dist && npm publish --tag beta",
-    "prepublish:latest": "npm run clean && npm run build && ts-node ./setup-package.ts",
-    "build": "yarn clean && strapi-plugin build",
-    "build:part:admin": "tsc -p tsconfig.admin.json ",
-    "build:part:server": "tsc -p tsconfig.server.json ",
-    "build:dev": "yarn run build && cp ./package.json ./dist",
-    "clean": "rm -rf dist",
-    "develop": "nodemon --exec \"yarn build:dev\"",
-    "test:unit": "jest --coverage",
-    "test:unit:watch": "jest --watch",
-    "test:unit:ci": "CI=true jest --ci --runInBand --verbose --coverage",
-    "lint": "prettier --check .",
-    "format": "prettier --write .",
-    "test:ts:back": "run -T tsc -p server/tsconfig.json",
-    "test:ts:front": "run -T tsc -p admin/tsconfig.json",
-    "verify": "strapi-plugin verify",
-    "watch": "strapi-plugin watch",
-    "watch:link": "strapi-plugin watch:link"
-  },
   "keywords": [
     "strapi",
     "plugin",

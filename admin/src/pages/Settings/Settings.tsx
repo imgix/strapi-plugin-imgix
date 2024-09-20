@@ -9,7 +9,7 @@ import {
   Layouts,
   useNotification,
   useRBAC
-} from '@strapi/strapi/admin';
+} from '@strapi/admin/strapi-admin';
 
 import { Box, Button, Flex, Link, Typography } from '@strapi/design-system';
 
