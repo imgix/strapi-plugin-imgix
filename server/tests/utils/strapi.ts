@@ -1,4 +1,4 @@
-import { Strapi } from '@strapi/strapi';
+import { Core } from '@strapi/strapi';
 import { imgixMock } from './plugins/imgix';
 import { uploadMock } from './plugins/upload/upload';
 
@@ -47,4 +47,4 @@ export const getStrapiMock = ({
       },
     },
   },
-}) as unknown as Strapi;
+}) as unknown as Core.Strapi;

@@ -1,6 +1,6 @@
 import { isEmpty, pickBy } from 'lodash';
 
-import { StrapiContext } from '../../@types';
+import { StrapiContext } from '../../../@types';
 import { pluginId } from '../utils';
 import { ConfigData } from '../validators';
 import { SOURCE_TYPES } from '../constants';

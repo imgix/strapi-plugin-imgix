@@ -12,24 +12,26 @@
     "url": "https://github.com/imgix/strapi-plugin-imgix"
   },
   "dependencies": {
-    "@strapi/design-system": "2.0.0-rc.11",
-    "@strapi/icons": "2.0.0-rc.11",
-    "@strapi/utils": "5.0.0",
+    "@strapi/design-system": "^2.0.0-rc.11",
+    "@strapi/icons": "^2.0.0-rc.11",
+    "@strapi/utils": "^5.0.0",
     "@tanstack/react-query": "^5.40.0",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
+    "react-intl": "^6.6.8",
     "zod": "^3.0.0"
   },
   "devDependencies": {
     "@strapi/strapi": "^5.0.0",
     "@strapi/types": "^5.0.0",
+    "@strapi/sdk-plugin": "^5.2.6",
     "@strapi/typescript-utils": "^5.0.0",
     "@types/jest": "^29.5.12",
     "@types/koa": "^2.15.0",
     "@types/koa-bodyparser": "^4.3.12",
     "@types/lodash": "^4.17.4",
-    "@types/react": "18.3.5",
-    "@types/react-dom": "18.3.0",
+    "@types/react": "^18.3.8",
+    "@types/react-dom": "^18.3.0",
     "@types/react-router-dom": "5.3.3",
     "@types/styled-components": "5.1.34",
     "husky": "7.0.4",
@@ -37,22 +39,22 @@
     "jest-cli": "^29.7.0",
     "jest-junit": "^16.0.0",
     "jest-styled-components": "^7.1.1",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-router-dom": "6.22.3",
-    "styled-components": "6.1.8",
+    "prettier": "^3.3.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "styled-components": "^6.1.13",
     "ts-jest": "^29.1.4",
     "ts-node": "^10.9.1",
-    "typescript": "5.3.2"
+    "typescript": "^5.6.2"
   },
   "peerDependencies": {
+    "@strapi/sdk-plugin": "^5.2.6",
     "@strapi/strapi": "^5.0.0",
-    "@strapi/design-system": "^2.0.0-rc.11",
-    "@strapi/icons": "^2.0.0-rc.11",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^6.0.0",
-    "styled-components": "^6.0.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "styled-components": "^6.1.13"
   },
   "author": {
     "name": "imgix",
@@ -76,22 +78,43 @@
     ],
     "ext": "js,json,ts"
   },
+  "exports": {
+    "./package.json": "./package.json",
+    "./strapi-admin": {
+      "types": "./dist/admin/src/index.d.ts",
+      "source": "./admin/src/index.ts",
+      "import": "./dist/admin/index.mjs",
+      "require": "./dist/admin/index.js",
+      "default": "./dist/admin/index.js"
+    },
+    "./strapi-server": {
+      "types": "./dist/server/src/index.d.ts",
+      "source": "./server/src/index.ts",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "husky install",
-    "publish:latest": "cd dist && npm publish --tag latest",
-    "publish:beta": "cd dist && npm publish --tag beta",
-    "prepublish:latest": "npm run clean && npm run build && ts-node ./setup-package.ts",
-    "build": "yarn clean && yarn build:part:admin && yarn build:part:server",
-    "build:part:admin": "tsc -p tsconfig.admin.json ",
-    "build:part:server": "tsc -p tsconfig.server.json ",
-    "build:dev": "yarn run build && cp ./package.json ./dist",
+    "publish:latest": "npm publish --tag latest",
+    "publish:beta": "npm publish --tag beta",
+    "build": "yarn clean && strapi-plugin build",
     "clean": "rm -rf dist",
     "develop": "nodemon --exec \"yarn build:dev\"",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "test:ts:back": "run -T tsc -p server/tsconfig.json",
+    "test:ts:front": "run -T tsc -p admin/tsconfig.json",
     "test:unit": "jest --coverage",
     "test:unit:watch": "jest --watch",
     "test:unit:ci": "CI=true jest --ci --runInBand --verbose --coverage",
-    "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "verify": "strapi-plugin verify",
+    "watch": "strapi-plugin watch",
+    "watch:link": "strapi-plugin watch:link"
   },
   "keywords": [
     "strapi",

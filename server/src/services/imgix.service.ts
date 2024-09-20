@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { StrapiContext, StrapiMedia, StrapiMediaFormatKey } from '../../@types';
+import { StrapiContext, StrapiMedia, StrapiMediaFormatKey } from '../../../@types';
 import { getService } from '../utils';
 
 const FILE_MODEL_UID = 'plugin::upload.file';

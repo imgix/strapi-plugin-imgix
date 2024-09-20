@@ -1,4 +1,3 @@
-import pluginPkg from '../../package.json';
 import { pluginId } from './utils';
 import Initializer from './components/Initializer';
 import permissions from './permissions';
@@ -17,16 +16,13 @@ function flattenObject(obj: any, prefix = '') {
   }, {} as any);
 }
 
-
-const name = pluginPkg.strapi.name;
-
 export default {
   register(app: any) {
     const plugin = {
       id: pluginId,
       initializer: Initializer,
       isReady: false,
-      name,
+      name: pluginId,
     };
     app.createSettingSection(
       {
@@ -47,7 +43,8 @@ export default {
           Component: async () => {
             const component = await import(
               /* webpackChunkName: "imgx-settings" */ './pages/Settings'
-              );
+              ).then((mod) => ({ default: mod.SettingsPage }))
+              
             return component;
           },
           permissions: permissions.settings,

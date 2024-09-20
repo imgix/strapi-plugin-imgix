@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { apiKeyValidator, settingsSchema } from '../validators';
+import { apiKeyValidator, settingsSchema } from '.';
 
 export const getSettingsValidator = (payload: unknown) => {
   const result = settingsSchema.safeParse(payload);

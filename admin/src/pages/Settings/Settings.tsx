@@ -31,7 +31,22 @@ import { HeaderLink } from './styles';
 
 import { FormData } from './types';
 
-export const Settings = () => {
+const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
+  const item = get(pluginPermissions, key);
+  if (isArray(item)) {
+    return [...acc, ...item];
+  }
+  return [...acc, item];
+}, []);
+
+const ProtectedSettingsPage = () => (
+  <Page.Protect permissions={pluginPermissions.settings}>
+    <Settings />
+  </Page.Protect>
+);
+
+const Settings = () => {
+  console.log('page');
   const { formatMessage } = useIntl();
   const { toggleNotification } = useNotification();
   // const { lockApp, unlockApp } = useOverlayBlocker(); // TODO
@@ -40,14 +55,6 @@ export const Settings = () => {
 
   const [apiKeyValidation, setApiKeyValidation] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);
-
-  const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
-    const item = get(pluginPermissions, key);
-    if (isArray(item)) {
-      return [...acc, ...item];
-    }
-    return [...acc, item];
-  }, []);
 
   const {
     isLoading: isLoadingForPermissions,
@@ -276,3 +283,5 @@ export const Settings = () => {
     </Page.Main>
   );
 };
+
+export { ProtectedSettingsPage, Settings };

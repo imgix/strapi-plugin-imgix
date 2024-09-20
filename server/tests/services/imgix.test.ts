@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import imgixService from '../../services/imgix.service';
-import { ConfigData } from '../../validators';
+import imgixService from '../../src/services/imgix.service';
+import { ConfigData } from '../../src/validators';
 import { getStrapiMock } from '../utils/strapi';
 
 type DeepPartial<T> = T extends object

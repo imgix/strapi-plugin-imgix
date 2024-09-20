@@ -1,8 +1,8 @@
 import { Core } from '@strapi/strapi';
-import { SOURCE_TYPES } from '../constants';
-import { permissions } from '../permissions';
-import { pluginId } from '../utils';
-import bootstrap from '../bootstrap';
+import { SOURCE_TYPES } from '../src/constants';
+import { permissions } from '../src/permissions';
+import { pluginId } from '../src/utils';
+import bootstrap from '../src/bootstrap';
 import { imgixMock } from './utils/plugins/imgix';
 import { getStrapiMock } from './utils/strapi';
 

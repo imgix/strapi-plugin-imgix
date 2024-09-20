@@ -1,5 +1,5 @@
 import { Core } from '@strapi/strapi';
-import register from '../register';
+import register from '../src/register';
 import { uploadDecoratorMock } from './utils/plugins/imgix/services';
 import { getStrapiMock } from './utils/strapi';
 

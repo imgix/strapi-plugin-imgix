@@ -1,5 +1,5 @@
 import { isNil } from 'lodash';
-import { StrapiContext } from '../../@types';
+import { StrapiContext } from '../../../@types';
 import { permissions } from '../permissions';
 import { permissionsChecker } from '../decorators';
 import { getService } from '../utils';

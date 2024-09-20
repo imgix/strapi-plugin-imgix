@@ -1,4 +1,4 @@
-import { SOURCE_TYPES } from '../../constants';
+import { SOURCE_TYPES } from '../constants';
 import { ConfigData } from '../validators';
 
 const defaultConfig: ConfigData = {

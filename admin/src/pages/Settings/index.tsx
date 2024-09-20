@@ -1,7 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { Settings } from './Settings';
+import { ProtectedSettingsPage } from './Settings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,11 +12,14 @@ const queryClient = new QueryClient({
   },
 });
 
-const SettingsPage =() => (
-  <QueryClientProvider client={queryClient}>
-    <Settings />
-  </QueryClientProvider>
-);
+const SettingsPage =() => {
+  console.log('init');
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ProtectedSettingsPage />
+    </QueryClientProvider>
+  );
+};
 SettingsPage.displayName = 'SettingsPage';
 
-export default SettingsPage;
+export { SettingsPage };
