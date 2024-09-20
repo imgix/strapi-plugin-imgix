@@ -2,13 +2,14 @@ import React, { useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik, FormikHelpers } from 'formik';
-import { camelCase, get, isArray, isEmpty, isNil, merge, pickBy } from 'lodash';
+// import { camelCase, get, isArray, isEmpty, isNil, merge, pickBy } from 'lodash';
+import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
 
 import {
   Page,
   Layouts,
   useNotification,
-  useRBAC
+  // useRBAC
 } from '@strapi/admin/strapi-admin';
 
 import { Box, Button, Flex, Link, Typography } from '@strapi/design-system';
@@ -31,13 +32,13 @@ import { HeaderLink } from './styles';
 
 import { FormData } from './types';
 
-const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
-  const item = get(pluginPermissions, key);
-  if (isArray(item)) {
-    return [...acc, ...item];
-  }
-  return [...acc, item];
-}, []);
+// const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
+//   const item = get(pluginPermissions, key);
+//   if (isArray(item)) {
+//     return [...acc, ...item];
+//   }
+//   return [...acc, item];
+// }, []);
 
 const ProtectedSettingsPage = () => (
   <Page.Protect permissions={pluginPermissions.settings}>
@@ -46,7 +47,6 @@ const ProtectedSettingsPage = () => (
 );
 
 const Settings = () => {
-  console.log('page');
   const { formatMessage } = useIntl();
   const { toggleNotification } = useNotification();
   // const { lockApp, unlockApp } = useOverlayBlocker(); // TODO
@@ -56,10 +56,14 @@ const Settings = () => {
   const [apiKeyValidation, setApiKeyValidation] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);
 
-  const {
-    isLoading: isLoadingForPermissions,
-    allowedActions: { canChange },
-  } = useRBAC(flattenPermissions);
+  // const {
+  //   isLoading: isLoadingForPermissions,
+  //   allowedActions: { canChange },
+  // } = useRBAC(flattenPermissions);
+
+  // TODO: Remove after completed investigation performed by Strapi for `useRBAC` and `Protected` issue with AuthProvider in plugins
+  const canChange = true;
+  const isLoadingForPermissions = false;
 
   const { data, isLoading } = useQuery({
     queryKey: [camelCase(pluginId), 'get-settings'],
@@ -84,10 +88,8 @@ const Settings = () => {
           id: `${camelCase(pluginId)}.page.settings.notification.save.success`,
         }),
       });
-      // unlockApp();
     },
     onError: (error: HttpError<Details[]>) => {
-      // unlockApp();
       if (error instanceof HttpError) {
         const details = error.response?.map((e: { message: string }) => e.message).join('\n');
         toggleNotification({
@@ -130,7 +132,6 @@ const Settings = () => {
   const onSubmitForm = async (values: FormData, actions: FormikHelpers<FormData>) => {
     setSubmitInProgress(true);
     const payload = preparePayload(values);
-    // lockApp();
     try {
       await saveSettings.mutateAsync(payload);
       actions.resetForm({
@@ -139,7 +140,6 @@ const Settings = () => {
     } catch {
 
     } finally {
-      // unlockApp();
       setSubmitInProgress(false);
     }
   };

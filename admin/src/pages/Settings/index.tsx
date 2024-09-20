@@ -1,7 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { ProtectedSettingsPage } from './Settings';
+import { Settings as Page } from './Settings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,7 +14,7 @@ const queryClient = new QueryClient({
 
 const SettingsPage = () => (
   <QueryClientProvider client={queryClient}>
-    <ProtectedSettingsPage />
+    <Page />
   </QueryClientProvider>
 );
 SettingsPage.displayName = 'SettingsPage';
