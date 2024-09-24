@@ -71,16 +71,6 @@
       "pre-commit": "yarn format && yarn test:unit"
     }
   },
-  "nodemonConfig": {
-    "ignore": [
-      "./dist/**/*",
-      "./scripts/**/*",
-      "./__mocks__/*",
-      "./**/__tests__/*",
-      "./**/tests/*"
-    ],
-    "ext": "js,json,ts"
-  },
   "exports": {
     "./package.json": "./package.json",
     "./strapi-admin": {
@@ -106,9 +96,7 @@
     "publish:latest": "npm publish --tag latest",
     "publish:beta": "npm publish --tag beta",
     "build": "yarn clean && strapi-plugin build",
-    "build:dev": "yarn build && ts-node --project ./scripts/tsconfig.json ./scripts/setup-dev-package.ts",
     "clean": "rm -rf dist",
-    "develop": "nodemon --exec \"yarn build:dev\"",
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "test:ts:back": "run -T tsc -p server/tsconfig.json",

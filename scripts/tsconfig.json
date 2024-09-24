@@ -1,8 +1,0 @@
-{
-  "extends": "@strapi/typescript-utils/tsconfigs/server",
-  "include": ["./setup-dev-package.ts"],
-  "compilerOptions": {
-    "rootDir": ".",
-    "baseUrl": "."
-  }
-}

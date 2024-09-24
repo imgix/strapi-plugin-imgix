@@ -2,15 +2,14 @@ import React, { useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik, FormikHelpers } from 'formik';
-// import { camelCase, get, isArray, isEmpty, isNil, merge, pickBy } from 'lodash';
-import { camelCase, isEmpty, isNil, merge, pickBy } from 'lodash';
+import { camelCase, get, isArray, isEmpty, isNil, merge, pickBy } from 'lodash';
 
 import {
   Page,
   Layouts,
   useNotification,
-  // useRBAC
-} from '@strapi/admin/strapi-admin';
+  useRBAC,
+} from '@strapi/strapi/admin';
 
 import { Box, Button, Flex, Link, Typography } from '@strapi/design-system';
 
@@ -32,13 +31,13 @@ import { HeaderLink } from './styles';
 
 import { FormData } from './types';
 
-// const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
-//   const item = get(pluginPermissions, key);
-//   if (isArray(item)) {
-//     return [...acc, ...item];
-//   }
-//   return [...acc, item];
-// }, []);
+const flattenPermissions = Object.keys(pluginPermissions).reduce((acc: Array<unknown>, key: string) => {
+  const item = get(pluginPermissions, key);
+  if (isArray(item)) {
+    return [...acc, ...item];
+  }
+  return [...acc, item];
+}, []);
 
 const ProtectedSettingsPage = () => (
   <Page.Protect permissions={pluginPermissions.settings}>
@@ -56,14 +55,10 @@ const Settings = () => {
   const [apiKeyValidation, setApiKeyValidation] = useState(false);
   const [submitInProgress, setSubmitInProgress] = useState(false);
 
-  // const {
-  //   isLoading: isLoadingForPermissions,
-  //   allowedActions: { canChange },
-  // } = useRBAC(flattenPermissions);
-
-  // TODO: Remove after completed investigation performed by Strapi for `useRBAC` and `Protected` issue with AuthProvider in plugins
-  const canChange = true;
-  const isLoadingForPermissions = false;
+  const {
+    isLoading: isLoadingForPermissions,
+    allowedActions: { canChange },
+  } = useRBAC(flattenPermissions);
 
   const { data, isLoading } = useQuery({
     queryKey: [camelCase(pluginId), 'get-settings'],
@@ -205,7 +200,7 @@ const Settings = () => {
 
   return (
     <Page.Main>
-      <Page.Title>{getMessage("page.settings.header.title")}</Page.Title>
+      <Page.Title>{getMessage('page.settings.header.title')}</Page.Title>
       <Formik<FormData>
         onSubmit={onSubmitForm}
         initialValues={merge(initialValues, data)}

@@ -246,6 +246,10 @@ To get the full list please check the dedicated **[Libraries directory](https://
 
 ### Development
 
+**Prerequisites**
+- `yarn` - installed globally
+- `yarnc` - installed globally
+
 1. Clone repository
 
    ```
@@ -258,30 +262,20 @@ To get the full list please check the dedicated **[Libraries directory](https://
    // Install all dependencies
    yarn install
 
-   // Watch for file changes
-   yarn develop
-
-   // or run build without nodemon
-   yarn build
+   // Watch for file changes using `plugin-sdk` and follow the instructions provided by this official Strapi developer tool
+   yarn watch:link
    ```
 
-3. Create a soft link in your strapi project to plugin build folder
+3. Within the Strapi project, modify `config/plugins.{js,ts}` for `imgix`
 
-   ```sh
-   ln -s <your path>/strapi-plugin-imgix/dist <your path>/strapi-project/src/plugins/imgix
-   ```
-
-4. Modify `config/plugins.{js,ts}` for `imgix`
-
-```js
+```ts
 //...
 'imgix': {
   enabled: true,
-  resolve: './src/plugins/imgix',
   //...
 }
 //...
 ```
 
-5. Run your Strapi instance
+4. Run your Strapi instance
 
