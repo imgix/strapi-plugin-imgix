@@ -4,12 +4,12 @@
 
 A Strapi Plugin to integrate [imgix](www.imgix.com) with your Strapi Media Library.
 
-[![npm version](https://img.shields.io/github/package-json/v/imgix/strapi-plugin-imgix?label=npm&logo=npm)](https://www.npmjs.com/package/strapi-plugin-imgix)
-[![Build Status](https://circleci.com/gh/imgix/strapi-plugin-imgix.svg?style=shield)](https://circleci.com/gh/imgix/strapi-plugin-imgix)
+[![npm version](https://img.shields.io/github/package-json/v/imgix/strapi-plugin-imgix/v4?label=npm&logo=npm)](https://www.npmjs.com/package/strapi-plugin-imgix)
+[![Build Status](https://circleci.com/gh/imgix/strapi-plugin-imgix/tree/v4.svg?style=shield)](https://circleci.com/gh/imgix/strapi-plugin-imgix/tree/v4)
 
 <!-- [![Downloads](https://img.shields.io/npm/dm/@imgix/strapi-plugin-imgix.svg)](https://www.npmjs.com/package/@imgix/strapi-plugin-imgix) -->
 
-[![License](https://img.shields.io/github/license/imgix/strapi-plugin-imgix.svg?color=informational)](https://github.com/imgix/strapi-plugin-imgix/blob/main/LICENSE.md)
+[![License](https://img.shields.io/github/license/imgix/strapi-plugin-imgix.svg?color=informational)](https://github.com/imgix/strapi-plugin-imgix/blob/v4/LICENSE)
 
 <!-- [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier) -->
 <!-- [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fimgix%2Fstrapi-plugin-imgix.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fimgix%2Fstrapi-plugin-imgix?ref=badge_shield) -->
@@ -67,7 +67,7 @@ In our minimum support we're following [official Node.js releases timelines](htt
 
 **Supported Strapi versions**:
 
-- Strapi v4.25.x (recently tested)
+- Strapi v4.25.12 (recently tested)
 - Strapi v4.x
 
 ## Installation
