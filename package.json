@@ -12,18 +12,18 @@
     "url": "https://github.com/imgix/strapi-plugin-imgix"
   },
   "dependencies": {
-    "@strapi/design-system": "^1.18.0",
-    "@strapi/helper-plugin": "^4.25.12",
-    "@strapi/icons": "^1.18.0",
+    "@strapi/design-system": "^1.19.0",
+    "@strapi/helper-plugin": "^4.25.20",
+    "@strapi/icons": "^1.19.0",
     "@tanstack/react-query": "^5.40.0",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "zod": "^3.0.0"
   },
   "devDependencies": {
-    "@strapi/strapi": "^4.25.12",
-    "@strapi/types": "^4.25.12",
-    "@strapi/typescript-utils": "^4.25.12",
+    "@strapi/strapi": "^4.25.20",
+    "@strapi/types": "^4.25.20",
+    "@strapi/typescript-utils": "^4.25.20",
     "@types/jest": "^29.5.12",
     "@types/koa": "^2.15.0",
     "@types/koa-bodyparser": "^4.3.12",
